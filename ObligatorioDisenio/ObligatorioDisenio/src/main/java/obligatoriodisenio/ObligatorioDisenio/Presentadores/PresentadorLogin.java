@@ -10,8 +10,7 @@ import jakarta.servlet.http.HttpSession;
 import obligatoriodisenio.ObligatorioDisenio.model.Fachada;
 import obligatoriodisenio.ObligatorioDisenio.model.Usuario;
 
-@RestController
-@RequestMapping("/")
+@RestController 
 public class PresentadorLogin {
     
     private Fachada fachada;

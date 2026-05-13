@@ -2,7 +2,6 @@ package obligatoriodisenio.ObligatorioDisenio.model;
 
 import org.springframework.stereotype.Component;
 
-@Component
 public class Fachada {
     private static Fachada instancia;
     private SistemaJornadas sistemaJornadas;
