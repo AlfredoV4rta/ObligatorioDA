@@ -2,6 +2,7 @@ package obligatoriodisenio.ObligatorioDisenio.model;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class Usuario {
     private String nombreUsuario;
@@ -68,5 +69,19 @@ public class Usuario {
 
     public void removerApuesta(Apuesta apuesta) {
         this.apuestas.remove(apuesta);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        Usuario usuario = (Usuario) obj;
+        return Objects.equals(nombreUsuario, usuario.nombreUsuario) &&
+               Objects.equals(contrasenia, usuario.contrasenia);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(nombreUsuario, contrasenia);
     }
 }

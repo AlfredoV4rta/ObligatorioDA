@@ -20,16 +20,8 @@ public class Jugadores {
         return saldo;
     }
 
-    public void setSaldo(double saldo) {
-        this.saldo = saldo;
-    }
-
     public List<Apuesta> getApuestas() {
         return apuestas;
-    }
-
-    public void setApuestas(List<Apuesta> apuestas) {
-        this.apuestas = apuestas;
     }
 
     public void agregarApuesta(Apuesta apuesta) {

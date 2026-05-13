@@ -20,16 +20,8 @@ public class Modalidad {
         return nombre;
     }
 
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
-    }
-
     public List<Apuesta> getApuestas() {
         return apuestas;
-    }
-
-    public void setApuestas(List<Apuesta> apuestas) {
-        this.apuestas = apuestas;
     }
 
     public void agregarApuesta(Apuesta apuesta) {

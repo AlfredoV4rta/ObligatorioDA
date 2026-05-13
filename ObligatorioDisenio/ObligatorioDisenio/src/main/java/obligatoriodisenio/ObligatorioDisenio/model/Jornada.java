@@ -14,10 +14,6 @@ public class Jornada {
         return carreras;
     }
 
-    public void setCarreras(List<Carrera> carreras) {
-        this.carreras = carreras;
-    }
-
     public void agregarCarrera(Carrera carrera) {
         this.carreras.add(carrera);
     }

@@ -1,5 +1,8 @@
 package obligatoriodisenio.ObligatorioDisenio.model;
 
+import org.springframework.stereotype.Component;
+
+@Component
 public class Fachada {
     private SistemaJornadas sistemaJornadas;
     private SistemaJugadores sistemaJugadores;
@@ -23,16 +26,8 @@ public class Fachada {
         return sistemaJugadores;
     }
 
-    public void setSistemaJugadores(SistemaJugadores sistemaJugadores) {
-        this.sistemaJugadores = sistemaJugadores;
-    }
-
     public SistemaAdministradores getSistemaAdministradores() {
         return sistemaAdministradores;
-    }
-
-    public void setSistemaAdministradores(SistemaAdministradores sistemaAdministradores) {
-        this.sistemaAdministradores = sistemaAdministradores;
     }
 
     // Métodos de negocio
@@ -54,5 +49,9 @@ public class Fachada {
 
     public void crearApuesta(Usuario usuario, Apuesta apuesta) {
         usuario.agregarApuesta(apuesta);
+    }
+
+    public Usuario login(String nombreUsuario, String contrasenia) {
+        return sistemaJugadores.buscarUsuario(nombreUsuario, contrasenia);
     }
 }

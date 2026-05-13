@@ -16,10 +16,6 @@ public class Participacion {
         return caballo;
     }
 
-    public void setCaballo(Caballo caballo) {
-        this.caballo = caballo;
-    }
-
     public Carrera getCarrera() {
         return carrera;
     }

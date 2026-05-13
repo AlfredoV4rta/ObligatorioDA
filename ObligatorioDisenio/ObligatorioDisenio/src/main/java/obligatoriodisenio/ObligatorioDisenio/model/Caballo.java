@@ -22,16 +22,8 @@ public class Caballo {
         return nombre;
     }
 
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
-    }
-
     public double getDividendo() {
         return dividendo;
-    }
-
-    public void setDividendo(double dividendo) {
-        this.dividendo = dividendo;
     }
 
     public List<Participacion> getParticipaciones() {

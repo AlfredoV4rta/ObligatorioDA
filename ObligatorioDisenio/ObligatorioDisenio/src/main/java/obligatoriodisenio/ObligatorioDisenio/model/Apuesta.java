@@ -16,10 +16,6 @@ public class Apuesta {
         return participacion;
     }
 
-    public void setParticipacion(Participacion participacion) {
-        this.participacion = participacion;
-    }
-
     public Modalidad getModalidad() {
         return modalidad;
     }
