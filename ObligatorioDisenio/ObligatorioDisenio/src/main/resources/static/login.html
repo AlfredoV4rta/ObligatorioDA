@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sistema de Carreras de Caballos — Iniciar sesión</title>
+    <link rel="stylesheet" href="/login.css" />
+</head>
+<body>
+    <main class="login-container">
+        <div class="login-card">
+            <div class="login-header">
+                <h1>Sistema de Carreras de Caballos</h1>
+                <p class="login-subtitle">Ingresá tus credenciales para continuar</p>
+            </div>
+
+            <form id="loginForm" novalidate>
+                <div class="form-group">
+                    <label for="nombreUsuario">Usuario</label>
+                    <input
+                        type="text"
+                        id="nombreUsuario"
+                        name="nombreUsuario"
+                        placeholder="Nombre de usuario"
+                        autocomplete="username"
+                        required
+                    />
+                </div>
+
+                <div class="form-group">
+                    <label for="contrasenia">Contraseña</label>
+                    <input
+                        type="password"
+                        id="contrasenia"
+                        name="contrasenia"
+                        placeholder="Contraseña"
+                        autocomplete="current-password"
+                        required
+                    />
+                </div>
+
+                <p id="mensaje" class="mensaje" aria-live="polite"></p>
+
+                <button type="submit" id="btnLogin" class="btn-login">Ingresar</button>
+            </form>
+        </div>
+    </main>
+
+    <!-- src/main/resources/static/login.html -->
+<script type="module">
+    import dispatcher from '/CommandDispatcher.js';
+
+    const form         = document.getElementById('loginForm');
+    const inputUsuario = document.getElementById('nombreUsuario');
+    const inputPassword = document.getElementById('password');
+    const mensaje      = document.getElementById('mensaje');
+
+    const view = dispatcher.registerView('login', {
+        // sin urlInicio — igual que en la referencia
+        onException: (msg) => mostrarError(msg)
+    });
+
+    view.handler('accesoPermitido', () => {
+        window.location.href = '/menu.html';
+    });
+
+    view.handler('mensajeError', (texto) => {
+        mostrarError(texto);
+    });
+
+    dispatcher.startView(view);
+
+    form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        limpiarMensaje();
+        dispatcher.submit('/auth/login', {
+            nombreUsuario: inputUsuario.value.trim(),
+            contrasenia:   inputPassword.value   // coincide con @RequestParam
+        });
+    });
+
+    function mostrarError(texto) {
+        mensaje.textContent = texto;
+        mensaje.className = 'mensaje mensaje--error mensaje--visible';
+    }
+
+    function limpiarMensaje() {
+        mensaje.textContent = '';
+        mensaje.className = 'mensaje';
+    }
+</script>
+</body>
+</html>
+

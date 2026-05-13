@@ -1,5 +1,6 @@
 package obligatoriodisenio.ObligatorioDisenio.Presentadores;
 
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -10,13 +11,19 @@ import obligatoriodisenio.ObligatorioDisenio.model.Fachada;
 import obligatoriodisenio.ObligatorioDisenio.model.Usuario;
 
 @RestController
-@RequestMapping("/auth")
+@RequestMapping("/")
 public class PresentadorLogin {
     
     private Fachada fachada;
 
     public PresentadorLogin(Fachada fachada) {
         this.fachada = fachada;
+    }
+
+    @GetMapping("/")
+    public void raiz(jakarta.servlet.http.HttpServletResponse response) 
+        throws java.io.IOException {
+        response.sendRedirect("/login.html");
     }
 
     @PostMapping("/login")

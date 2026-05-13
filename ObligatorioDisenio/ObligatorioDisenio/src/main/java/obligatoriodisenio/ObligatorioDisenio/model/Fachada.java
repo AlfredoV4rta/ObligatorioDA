@@ -4,6 +4,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class Fachada {
+    private static Fachada instancia;
     private SistemaJornadas sistemaJornadas;
     private SistemaJugadores sistemaJugadores;
     private SistemaAdministradores sistemaAdministradores;
@@ -12,6 +13,14 @@ public class Fachada {
         this.sistemaJornadas = new SistemaJornadas();
         this.sistemaJugadores = new SistemaJugadores();
         this.sistemaAdministradores = new SistemaAdministradores();
+    }
+    
+
+    public static Fachada getInstance() {
+        if (instancia == null) {
+            instancia = new Fachada();
+        }
+        return instancia;
     }
 
     public SistemaJornadas getSistemaJornadas() {
@@ -54,4 +63,6 @@ public class Fachada {
     public Usuario login(String nombreUsuario, String contrasenia) {
         return sistemaJugadores.buscarUsuario(nombreUsuario, contrasenia);
     }
+
+  
 }
