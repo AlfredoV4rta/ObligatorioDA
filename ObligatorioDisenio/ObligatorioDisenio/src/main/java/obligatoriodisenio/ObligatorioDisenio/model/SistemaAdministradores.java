@@ -14,9 +14,6 @@ public class SistemaAdministradores {
         return usuarios;
     }
 
-    public void setUsuarios(List<Usuario> usuarios) {
-        this.usuarios = usuarios;
-    }
 
     public void agregarUsuario(Usuario usuario) {
         this.usuarios.add(usuario);

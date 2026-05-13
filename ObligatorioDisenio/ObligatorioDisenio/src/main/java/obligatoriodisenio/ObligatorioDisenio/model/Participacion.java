@@ -20,7 +20,4 @@ public class Participacion {
         return carrera;
     }
 
-    public void setCarrera(Carrera carrera) {
-        this.carrera = carrera;
-    }
 }

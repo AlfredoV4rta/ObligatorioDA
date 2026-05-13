@@ -14,7 +14,4 @@ public class Resultado {
         return participacionGanadora;
     }
 
-    public void setParticipacionGanadora(Participacion participacionGanadora) {
-        this.participacionGanadora = participacionGanadora;
-    }
 }

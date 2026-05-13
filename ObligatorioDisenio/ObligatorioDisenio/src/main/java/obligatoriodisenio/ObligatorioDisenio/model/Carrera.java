@@ -27,49 +27,26 @@ public class Carrera {
         return participaciones;
     }
 
-    public void setParticipaciones(List<Participacion> participaciones) {
-        this.participaciones = participaciones;
-    }
-
     public Jornada getJornada() {
         return jornada;
-    }
-
-    public void setJornada(Jornada jornada) {
-        this.jornada = jornada;
     }
 
     public Estado getEstado() {
         return estado;
     }
 
-    public void setEstado(Estado estado) {
-        this.estado = estado;
-    }
-
     public int getNroCarrera() {
         return nroCarrera;
-    }
-
-    public void setNroCarrera(int nroCarrera) {
-        this.nroCarrera = nroCarrera;
     }
 
     public String getNombre() {
         return nombre;
     }
 
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
-    }
-
     public Resultado getResultado() {
         return resultado;
     }
 
-    public void setResultado(Resultado resultado) {
-        this.resultado = resultado;
-    }
 
     public void agregarParticipacion(Participacion participacion) {
         this.participaciones.add(participacion);

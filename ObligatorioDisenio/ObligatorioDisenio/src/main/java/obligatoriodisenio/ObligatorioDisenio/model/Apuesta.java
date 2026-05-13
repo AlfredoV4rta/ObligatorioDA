@@ -20,7 +20,4 @@ public class Apuesta {
         return modalidad;
     }
 
-    public void setModalidad(Modalidad modalidad) {
-        this.modalidad = modalidad;
-    }
 }
