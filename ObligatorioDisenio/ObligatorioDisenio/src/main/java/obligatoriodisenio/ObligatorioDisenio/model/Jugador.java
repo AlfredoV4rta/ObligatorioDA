@@ -3,21 +3,27 @@ package obligatoriodisenio.ObligatorioDisenio.model;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Jugadores {
+public class Jugador extends Usuario {
     private double saldo;
     private List<Apuesta> apuestas;
 
-    public Jugadores() {
+    public Jugador() {
+        super();
         this.apuestas = new ArrayList<>();
     }
 
-    public Jugadores(double saldo) {
-        this();
+    public Jugador(String nombreUsuario, String contrasenia, String nombre, String apellido, double saldo) {
+        super(nombreUsuario, contrasenia, nombre, apellido);
         this.saldo = saldo;
+        this.apuestas = new ArrayList<>();
     }
 
     public double getSaldo() {
         return saldo;
+    }
+
+    public void setSaldo(double saldo) {
+        this.saldo = saldo;
     }
 
     public List<Apuesta> getApuestas() {

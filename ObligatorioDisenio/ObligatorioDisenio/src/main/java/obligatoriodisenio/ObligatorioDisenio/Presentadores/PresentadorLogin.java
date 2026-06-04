@@ -25,9 +25,9 @@ public class PresentadorLogin {
         response.sendRedirect("/login.html");
     }
 
-    @PostMapping("/login")
+    /*@PostMapping("/login")
     public Commands login(@RequestParam String nombreUsuario, @RequestParam String contrasenia, HttpSession session) {
-        Usuario usuario = fachada.login(nombreUsuario, contrasenia);
+        Usuario usuario = fachada.buscarUsuario(nombreUsuario, contrasenia);
         
         if (usuario == null) {
             return Commands.create(
@@ -47,5 +47,5 @@ public class PresentadorLogin {
         return Commands.create(
             new Command("sesionFinalizada", "Sesión cerrada")
         );
-    }
+    }*/
 }

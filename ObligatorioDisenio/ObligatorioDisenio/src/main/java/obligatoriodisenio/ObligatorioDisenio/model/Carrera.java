@@ -20,7 +20,7 @@ public class Carrera {
         this.nroCarrera = nroCarrera;
         this.nombre = nombre;
         this.jornada = jornada;
-        this.estado = Estado.PENDIENTE;
+        this.estado = Estado.DEFINIDA;
     }
 
     public List<Participacion> getParticipaciones() {

@@ -1,16 +1,23 @@
 package obligatoriodisenio.ObligatorioDisenio.model;
 
 public class Participacion {
+    private int nroParticipacion;
     private Caballo caballo;
     private Carrera carrera;
 
     public Participacion() {
     }
-
-    public Participacion(Caballo caballo, Carrera carrera) {
+    
+    public Participacion(int nroParticipacion, Caballo caballo, Carrera carrera) {
+        this.nroParticipacion = nroParticipacion;
         this.caballo = caballo;
         this.carrera = carrera;
     }
+
+    public int getNroParticipacion() {
+        return nroParticipacion;
+    }
+    
 
     public Caballo getCaballo() {
         return caballo;

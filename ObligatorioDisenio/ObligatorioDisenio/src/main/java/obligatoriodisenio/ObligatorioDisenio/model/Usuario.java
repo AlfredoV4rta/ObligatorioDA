@@ -4,15 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class Usuario {
+public abstract class Usuario {
     private String nombreUsuario;
     private String contrasenia;
     private String nombre;
     private String apellido;
-    private List<Apuesta> apuestas;
 
     public Usuario() {
-        this.apuestas = new ArrayList<>();
     }
 
     public Usuario(String nombreUsuario, String contrasenia, String nombre, String apellido) {
@@ -22,6 +20,7 @@ public class Usuario {
         this.nombre = nombre;
         this.apellido = apellido;
     }
+
 
     public String getNombreUsuario() {
         return nombreUsuario;
@@ -53,22 +52,6 @@ public class Usuario {
 
     public void setApellido(String apellido) {
         this.apellido = apellido;
-    }
-
-    public List<Apuesta> getApuestas() {
-        return apuestas;
-    }
-
-    public void setApuestas(List<Apuesta> apuestas) {
-        this.apuestas = apuestas;
-    }
-
-    public void agregarApuesta(Apuesta apuesta) {
-        this.apuestas.add(apuesta);
-    }
-
-    public void removerApuesta(Apuesta apuesta) {
-        this.apuestas.remove(apuesta);
     }
 
     @Override

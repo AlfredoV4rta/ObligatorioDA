@@ -5,15 +5,12 @@ import org.springframework.stereotype.Component;
 public class Fachada {
     private static Fachada instancia;
     private SistemaJornadas sistemaJornadas;
-    private SistemaJugadores sistemaJugadores;
-    private SistemaAdministradores sistemaAdministradores;
+    private SistemaAcceso sistemaAcceso;
 
     public Fachada() {
         this.sistemaJornadas = new SistemaJornadas();
-        this.sistemaJugadores = new SistemaJugadores();
-        this.sistemaAdministradores = new SistemaAdministradores();
+        this.sistemaAcceso = new SistemaAcceso();
     }
-    
 
     public static Fachada getInstance() {
         if (instancia == null) {
@@ -30,14 +27,6 @@ public class Fachada {
         this.sistemaJornadas = sistemaJornadas;
     }
 
-    public SistemaJugadores getSistemaJugadores() {
-        return sistemaJugadores;
-    }
-
-    public SistemaAdministradores getSistemaAdministradores() {
-        return sistemaAdministradores;
-    }
-
     // Métodos de negocio
     public void crearJornada(Jornada jornada) {
         sistemaJornadas.agregarJornada(jornada);
@@ -47,21 +36,21 @@ public class Fachada {
         jornada.agregarCarrera(carrera);
     }
 
-    public void registrarUsuario(Usuario usuario) {
-        sistemaJugadores.agregarUsuario(usuario);
+    public void registrarJugadores(Jugador jugador) {
+        sistemaAcceso.agregarJugador(jugador);
     }
 
     public void registrarAdministrador(Administrador administrador) {
-        sistemaAdministradores.agregarUsuario(administrador);
+        sistemaAcceso.agregarAdministradores(administrador);
     }
 
     public void crearApuesta(Usuario usuario, Apuesta apuesta) {
-        usuario.agregarApuesta(apuesta);
+       // usuario.agregarApuesta(apuesta);
     }
 
-    public Usuario login(String nombreUsuario, String contrasenia) {
+    /*public Usuario login(String nombreUsuario, String contrasenia) {
         return sistemaJugadores.buscarUsuario(nombreUsuario, contrasenia);
-    }
+    }*/
 
   
 }
