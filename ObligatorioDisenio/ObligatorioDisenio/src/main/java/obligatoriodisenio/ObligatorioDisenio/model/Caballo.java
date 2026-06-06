@@ -30,10 +30,6 @@ public class Caballo {
         return participaciones;
     }
 
-    public void setParticipaciones(List<Participacion> participaciones) {
-        this.participaciones = participaciones;
-    }
-
     public void agregarParticipacion(Participacion participacion) {
         this.participaciones.add(participacion);
     }

@@ -14,9 +14,6 @@ public class SistemaJornadas {
         return jornadas;
     }
 
-    public void setJornadas(List<Jornada> jornadas) {
-        this.jornadas = jornadas;
-    }
 
     public void agregarJornada(Jornada jornada) {
         this.jornadas.add(jornada);
