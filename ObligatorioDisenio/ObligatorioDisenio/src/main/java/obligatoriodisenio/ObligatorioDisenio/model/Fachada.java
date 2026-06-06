@@ -5,13 +5,13 @@ import org.springframework.stereotype.Component;
 public class Fachada {
     private static Fachada instancia;
     private SistemaJornadas sistemaJornadas;
-    private SistemaUsuarios sistemaUsuarios;
+    private SistemaAcceso sistemaAcceso;
+    private SistemaApuestas sistemaApuestas;
 
     public Fachada() {
         this.sistemaJornadas = new SistemaJornadas();
-        this.sistemaUsuarios = new SistemaUsuarios();
+        this.sistemaAcceso = new SistemaAcceso();
     }
-    
 
     public static Fachada getInstance() {
         if (instancia == null) {
@@ -25,8 +25,12 @@ public class Fachada {
     }
 
 
-    public SistemaUsuarios getSistemaUsuarios() {
-        return sistemaUsuarios;
+    public SistemaAcceso getSistemaAcceso() {
+        return sistemaAcceso;
+    }
+
+    public SistemaApuestas getSistemaApuestas() {
+        return sistemaApuestas;
     }
 
     // Métodos de negocio
@@ -38,12 +42,12 @@ public class Fachada {
         jornada.agregarCarrera(carrera);
     }
 
-    public void registrarUsuario(Usuario usuario) {
-        sistemaUsuarios.agregarUsuario(usuario);
+    public void registrarJugador(Jugador usuario) {
+        sistemaAcceso.agregarJugador(usuario);
     }
 
     public void registrarAdministrador(Administrador administrador) {
-        sistemaUsuarios.agregarUsuario(administrador);
+        sistemaAcceso.agregarAdministrador(administrador);
     }
 
     public void crearApuesta(Usuario usuario, Apuesta apuesta) {
@@ -51,7 +55,7 @@ public class Fachada {
     }
 
     public Usuario login(String nombreUsuario, String contrasenia) {
-        return sistemaUsuarios.buscarUsuario(nombreUsuario, contrasenia);
+        return sistemaAcceso.buscarJugador(nombreUsuario, contrasenia);
     }
 
   

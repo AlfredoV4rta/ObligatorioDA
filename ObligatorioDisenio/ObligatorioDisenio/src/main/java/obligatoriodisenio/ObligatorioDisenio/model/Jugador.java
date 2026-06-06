@@ -3,15 +3,15 @@ package obligatoriodisenio.ObligatorioDisenio.model;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Jugadores {
+public class Jugador extends Usuario {
     private double saldo;
     private List<Apuesta> apuestas;
 
-    public Jugadores() {
+    public Jugador() {
         this.apuestas = new ArrayList<>();
     }
 
-    public Jugadores(double saldo) {
+    public Jugador(double saldo) {
         this();
         this.saldo = saldo;
     }

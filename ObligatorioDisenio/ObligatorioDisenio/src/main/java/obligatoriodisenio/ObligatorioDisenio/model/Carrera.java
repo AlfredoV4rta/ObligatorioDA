@@ -9,7 +9,7 @@ public class Carrera {
     private Estado estado;
     private int nroCarrera;
     private String nombre;
-    private Resultado resultado;
+    private Participacion participacionGanadora;
 
     public Carrera() {
         this.participaciones = new ArrayList<>();
@@ -20,7 +20,8 @@ public class Carrera {
         this.nroCarrera = nroCarrera;
         this.nombre = nombre;
         this.jornada = jornada;
-        this.estado = Estado.PENDIENTE;
+        this.estado = Estado.DEFINIDA;
+        this.participacionGanadora = null;
     }
 
     public List<Participacion> getParticipaciones() {
@@ -43,8 +44,8 @@ public class Carrera {
         return nombre;
     }
 
-    public Resultado getResultado() {
-        return resultado;
+    public Participacion getParticipacion() {
+        return participacionGanadora;
     }
 
 
