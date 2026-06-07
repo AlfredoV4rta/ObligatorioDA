@@ -20,6 +20,7 @@ public class SistemaAcceso {
         return jugadores;
     }
 
+    // METODOS JUGADOR
     public void agregarJugador(Jugador jugador) {
         this.jugadores.add(jugador);
     }
@@ -38,6 +39,16 @@ public class SistemaAcceso {
         return null;
     }
 
+    public Jugador obtenerInfoJugador(String nombreUsuario) {
+        for (Jugador j : jugadores) {
+            if (j.getNombreUsuario() != null && j.getNombreUsuario().equals(nombreUsuario)) {
+                return j;
+            }
+        }
+        return null;
+    }
+
+    // METODOS ADMINISTRADOR
     public void agregarAdministrador(Administrador administrador) {
         this.administradores.add(administrador);
     }

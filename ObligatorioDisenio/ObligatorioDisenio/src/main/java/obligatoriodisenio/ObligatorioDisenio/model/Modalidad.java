@@ -3,32 +3,18 @@ package obligatoriodisenio.ObligatorioDisenio.model;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Modalidad {
+public abstract class Modalidad {
     private String nombre;
-    private List<Apuesta> apuestas;
-
-    public Modalidad() {
-        this.apuestas = new ArrayList<>();
-    }
 
     public Modalidad(String nombre) {
-        this();
         this.nombre = nombre;
     }
 
     public String getNombre() {
-        return nombre;
+        return nombre; 
     }
 
-    public List<Apuesta> getApuestas() {
-        return apuestas;
-    }
-
-    public void agregarApuesta(Apuesta apuesta) {
-        this.apuestas.add(apuesta);
-    }
-
-    public void removerApuesta(Apuesta apuesta) {
-        this.apuestas.remove(apuesta);
-    }
+    public abstract double calcularCosto(double monto);
+    public abstract double calcularPago(double monto, double dividendo,
+                                        double totalApostadoCaballo);
 }

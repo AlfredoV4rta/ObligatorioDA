@@ -60,8 +60,12 @@
         onException: (msg) => mostrarError(msg)
     });
 
-    view.handler('accesoPermitido', () => {
-        window.location.href = '/menu.html';
+    view.handler('accesoJugador', () => {
+        window.location.href = '/tableroJugador.html';
+    });
+
+    view.handler('accesoAdmin', () => {
+        window.location.href = '/tableroAdmin.html';
     });
 
     view.handler('mensajeError', (texto) => {
@@ -73,7 +77,7 @@
     form.addEventListener('submit', (e) => {
         e.preventDefault();
         limpiarMensaje();
-        dispatcher.submit('/auth/login', {
+        dispatcher.submit('/login', {
             nombreUsuario: inputUsuario.value.trim(),
             contrasenia:   inputPassword.value   // coincide con @RequestParam
         });

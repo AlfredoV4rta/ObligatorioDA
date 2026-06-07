@@ -3,13 +3,15 @@ package obligatoriodisenio.ObligatorioDisenio.model;
 public class Apuesta {
     private Participacion participacion;
     private Modalidad modalidad;
+    private double monto;
 
     public Apuesta() {
     }
 
-    public Apuesta(Participacion participacion, Modalidad modalidad) {
+    public Apuesta(Participacion participacion, Modalidad modalidad, double monto) {
         this.participacion = participacion;
         this.modalidad = modalidad;
+        this.monto = monto;
     }
 
     public Participacion getParticipacion() {

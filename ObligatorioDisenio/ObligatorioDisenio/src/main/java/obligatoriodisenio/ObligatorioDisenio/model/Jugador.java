@@ -16,6 +16,12 @@ public class Jugador extends Usuario {
         this.saldo = saldo;
     }
 
+    public Jugador(String nombreUsuario, String contrasenia, String nombre, String apellido, double saldo) {
+    super(nombreUsuario, contrasenia, nombre, apellido);
+    this.saldo = saldo;
+    this.apuestas = new ArrayList<>();
+    }
+
     public double getSaldo() {
         return saldo;
     }

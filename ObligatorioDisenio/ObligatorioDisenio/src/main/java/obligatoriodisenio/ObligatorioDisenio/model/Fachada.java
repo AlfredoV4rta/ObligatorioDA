@@ -1,6 +1,10 @@
 package obligatoriodisenio.ObligatorioDisenio.model;
 
+import obligatoriodisenio.ObligatorioDisenio.model.Modalidad;
 import org.springframework.stereotype.Component;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Comparator;
 
 public class Fachada {
     private static Fachada instancia;
@@ -24,7 +28,6 @@ public class Fachada {
         return sistemaJornadas;
     }
 
-
     public SistemaAcceso getSistemaAcceso() {
         return sistemaAcceso;
     }
@@ -34,12 +37,9 @@ public class Fachada {
     }
 
     // Métodos de negocio
-    public void crearJornada(Jornada jornada) {
-        sistemaJornadas.agregarJornada(jornada);
-    }
-
-    public void agregarCarreraAJornada(Jornada jornada, Carrera carrera) {
-        jornada.agregarCarrera(carrera);
+    // ACCESO
+    public Usuario login(String nombreUsuario, String contrasenia) {
+        return sistemaAcceso.buscarJugador(nombreUsuario, contrasenia);
     }
 
     public void registrarJugador(Jugador usuario) {
@@ -50,13 +50,52 @@ public class Fachada {
         sistemaAcceso.agregarAdministrador(administrador);
     }
 
+    public Jugador buscarJugador(String nombreUsuario, String contrasenia) {
+        return sistemaAcceso.buscarJugador(nombreUsuario, contrasenia);
+    }
+
+    public Administrador buscarAdministrador(String nombreUsuario, String contrasenia) {
+        return sistemaAcceso.buscarAdministrador(nombreUsuario, contrasenia);
+    }
+
+    public Jugador obtenerInfoJugador(String nombreUsuario) {
+        return sistemaAcceso.obtenerInfoJugador(nombreUsuario);
+    }
+
+    // JORNADA
+    public void crearJornada(Jornada jornada) {
+        sistemaJornadas.agregarJornada(jornada);
+    }
+
+    public void agregarCarreraAJornada(Jornada jornada, Carrera carrera) {
+        jornada.agregarCarrera(carrera);
+    }
+
+    public List<Carrera> obtenerCarrerasDisponibles() {
+        return sistemaJornadas.obtenerCarrerasDisponibles();
+    }
+
+    // APUESTAS
     public void crearApuesta(Usuario usuario, Apuesta apuesta) {
         usuario.agregarApuesta(apuesta);
     }
 
-    public Usuario login(String nombreUsuario, String contrasenia) {
-        return sistemaAcceso.buscarJugador(nombreUsuario, contrasenia);
+    public List<Modalidad> obtenerTiposApuesta() {
+        List<Modalidad> modalidades = new ArrayList<>();
+        modalidades.add(new Simple());
+        modalidades.add(new Triple());
+        modalidades.add(new Super());
+        return modalidades;
     }
 
-  
+    public List<Apuesta> obtenerApuestasUsuario(String nombreUsuario) {
+        Jugador jugador = sistemaAcceso.obtenerInfoJugador(nombreUsuario);
+        if (jugador != null) {
+            return jugador.getApuestas();
+        }
+        return new ArrayList<>();
+    }
+
+
+
 }
