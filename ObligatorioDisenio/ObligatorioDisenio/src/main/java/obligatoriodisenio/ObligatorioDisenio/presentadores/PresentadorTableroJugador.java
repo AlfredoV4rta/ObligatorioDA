@@ -14,7 +14,6 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 import jakarta.servlet.http.HttpSession;
 import obligatoriodisenio.ObligatorioDisenio.model.Fachada;
 import obligatoriodisenio.ObligatorioDisenio.model.Jugador;
-import obligatoriodisenio.ObligatorioDisenio.model.Jugador;
 import obligatoriodisenio.ObligatorioDisenio.observador.Observable;
 import obligatoriodisenio.ObligatorioDisenio.observador.Observador;
 import obligatoriodisenio.ObligatorioDisenio.presentadores.Command;

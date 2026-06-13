@@ -1,8 +1,5 @@
 package obligatoriodisenio.ObligatorioDisenio.DTOs;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import obligatoriodisenio.ObligatorioDisenio.model.Jugador;
 
 public class JugadorDTO {
