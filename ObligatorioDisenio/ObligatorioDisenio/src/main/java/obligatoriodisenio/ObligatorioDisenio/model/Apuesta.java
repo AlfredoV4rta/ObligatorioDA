@@ -22,4 +22,8 @@ public class Apuesta {
         return modalidad;
     }
 
+    public double getMonto() {
+        return monto;
+    }
+
 }

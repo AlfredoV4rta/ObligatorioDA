@@ -14,6 +14,10 @@ public class Participacion {
         this.carrera = carrera;
     }
 
+    public int getNroParticipacion() {
+        return nroParticipacion;
+    }
+
     public Caballo getCaballo() {
         return caballo;
     }

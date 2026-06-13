@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MalaPATA — Tablero del Jugador</title>
+  <style>
+    * { box-sizing: border-box; }
+    body { font-family: 'Segoe UI', Tahoma, sans-serif; margin: 0; background: #0f1115; color: #e8eaed; }
+    header { background: #1b2030; padding: 16px 24px; display: flex; justify-content: space-between; align-items: center; }
+    header .saldo { color: #5bd17a; font-weight: bold; }
+    main { padding: 24px; display: grid; gap: 20px; max-width: 1000px; margin: 0 auto; }
+    .card { background: #1b2030; border-radius: 10px; padding: 16px 20px; }
+    .card h2 { margin: 0 0 12px; font-size: 15px; color: #9fb3c8; text-transform: uppercase; letter-spacing: .5px; }
+    .chips span { display: inline-block; background: #2a3142; border-radius: 14px; padding: 4px 14px; margin: 0 8px 8px 0; font-size: 14px; }
+    .carrera { border: 1px solid #2a3142; border-radius: 8px; padding: 12px 14px; margin-bottom: 12px; }
+    .carrera h3 { margin: 0 0 8px; font-size: 14px; }
+    table { width: 100%; border-collapse: collapse; }
+    th, td { padding: 6px 10px; text-align: left; border-bottom: 1px solid #2a3142; font-size: 14px; }
+    th { color: #9fb3c8; font-weight: 600; }
+    .sin-datos { color: #7a8699; font-style: italic; }
+    button.logout { background: #c0392b; color: #fff; border: none; border-radius: 6px; padding: 8px 14px; cursor: pointer; }
+  </style>
+</head>
+<body>
+  <!-- utilesVista.js: helpers globales (crearTablaDesdeJson, mostrarMensaje, ...) -->
+  <script src="/utilesVista.js"></script>
+
+  <header>
+    <div><strong id="nombreJugador">—</strong> · Saldo: <span class="saldo" id="saldo">—</span></div>
+    <button class="logout" id="btnLogout">Cerrar sesión</button>
+  </header>
+
+  <main>
+    <section class="card">
+      <h2>Tipos de apuesta</h2>
+      <div class="chips" id="tiposApuesta"><span class="sin-datos">Cargando…</span></div>
+    </section>
+
+    <section class="card">
+      <h2>Carreras disponibles para apostar</h2>
+      <div id="carreras"><p class="sin-datos">Cargando…</p></div>
+    </section>
+
+    <section class="card">
+      <h2>Mis apuestas</h2>
+      <div id="misApuestas"><p class="sin-datos">Cargando…</p></div>
+    </section>
+  </main>
+
+  <script type="module">
+    import dispatcher from '/CommandDispatcher.js';
+    import SSECommandDispatcher from '/SSECommandDispatcher.js';
+
+    /* ── 1) Registro de la vista: ciclo de vida + manejo de excepciones (HTTP 299) ── */
+    const view = dispatcher.registerView('tableroJugador', {
+      urlInicio: '/tableroJugador/inicio',   // se dispara al startView()
+      urlCierre: '/tableroJugador/fin',       // se dispara al cerrar/descargar la página
+      onException: (msg) => mostrarMensaje(msg)
+    });
+
+    /* ── 2) Handlers: el id debe COINCIDIR con el id del Command del presentador ── */
+    view.handler('infoJugador', (j) => {
+      document.getElementById('nombreJugador').textContent = `${j.nombre} ${j.apellido}`;
+      document.getElementById('saldo').textContent = `$${j.saldo}`;
+    });
+
+    view.handler('tiposApuesta', (tipos) => {
+      const cont = document.getElementById('tiposApuesta');
+      cont.innerHTML = (tipos && tipos.length)
+        ? tipos.map(t => `<span>${t.nombre}</span>`).join('')
+        : '<span class="sin-datos">—</span>';
+    });
+
+    view.handler('carrerasDisponibles', (carreras) => {
+      const cont = document.getElementById('carreras');
+      if (!carreras || carreras.length === 0) {
+        cont.innerHTML = '<p class="sin-datos">No hay carreras abiertas</p>';
+        return;
+      }
+      cont.innerHTML = carreras.map(c => `
+        <div class="carrera">
+          <h3>Carrera #${c.numero} — ${c.fecha}</h3>
+          ${crearTablaDesdeJson(c.caballos)}
+        </div>`).join('');
+    });
+
+    view.handler('apuestasUsuario', (apuestas) => {
+      const cont = document.getElementById('misApuestas');
+      cont.innerHTML = (apuestas && apuestas.length)
+        ? crearTablaDesdeJson(apuestas)
+        : '<p class="sin-datos">Todavía no realizaste apuestas</p>';
+    });
+
+    /* Si se cierra la sesión (logout), volver al login */
+    view.handler('sesionFinalizada', () => { window.location.href = '/login.html'; });
+
+    /* ── 3) Arrancar la vista → dispara /inicio (render inicial) ── */
+    dispatcher.startView(view);
+
+    /* ── 4) Conectar el SSE → habilita el push de actualizar() (auto-refresh) ── */
+    const sse = new SSECommandDispatcher('/tableroJugador/registrarSSE', dispatcher,
+      () => console.warn('SSE cerrado por el servidor'));
+
+    /* ── Acción: cerrar sesión ── */
+    document.getElementById('btnLogout').addEventListener('click', () => {
+      dispatcher.submit('/logout');
+    });
+  </script>
+</body>
+</html>
