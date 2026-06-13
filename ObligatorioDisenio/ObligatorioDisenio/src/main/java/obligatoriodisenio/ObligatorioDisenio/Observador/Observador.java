@@ -1,4 +1,4 @@
-package obligatoriodisenio.ObligatorioDisenio.Observador;
+package obligatoriodisenio.ObligatorioDisenio.observador;
 
 public interface Observador {
 

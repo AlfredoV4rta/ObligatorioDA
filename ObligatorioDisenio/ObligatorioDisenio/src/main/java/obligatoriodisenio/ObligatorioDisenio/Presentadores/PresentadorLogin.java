@@ -1,4 +1,4 @@
-package obligatoriodisenio.ObligatorioDisenio.Presentadores;
+package obligatoriodisenio.ObligatorioDisenio.presentadores;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -11,8 +11,8 @@ import obligatoriodisenio.ObligatorioDisenio.model.Administrador;
 import obligatoriodisenio.ObligatorioDisenio.model.Fachada;
 import obligatoriodisenio.ObligatorioDisenio.model.Jugador;
 import obligatoriodisenio.ObligatorioDisenio.model.Usuario;
-import obligatoriodisenio.ObligatorioDisenio.Presentadores.Command;
-import obligatoriodisenio.ObligatorioDisenio.Presentadores.Commands;
+import obligatoriodisenio.ObligatorioDisenio.presentadores.Command;
+import obligatoriodisenio.ObligatorioDisenio.presentadores.Commands;
 
 @RestController
 public class PresentadorLogin {

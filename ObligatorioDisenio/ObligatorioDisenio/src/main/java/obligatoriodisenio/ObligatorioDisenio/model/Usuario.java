@@ -9,10 +9,8 @@ public class Usuario {
     private String contrasenia;
     private String nombre;
     private String apellido;
-    private List<Apuesta> apuestas;
 
     public Usuario() {
-        this.apuestas = new ArrayList<>();
     }
 
     public Usuario(String nombreUsuario, String contrasenia, String nombre, String apellido) {
@@ -37,19 +35,6 @@ public class Usuario {
 
     public String getApellido() {
         return apellido;
-    }
-
-    public List<Apuesta> getApuestas() {
-        return apuestas;
-    }
-
-
-    public void agregarApuesta(Apuesta apuesta) {
-        this.apuestas.add(apuesta);
-    }
-
-    public void removerApuesta(Apuesta apuesta) {
-        this.apuestas.remove(apuesta);
     }
 
     @Override

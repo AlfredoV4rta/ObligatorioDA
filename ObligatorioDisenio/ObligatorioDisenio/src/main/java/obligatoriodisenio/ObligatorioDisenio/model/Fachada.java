@@ -1,20 +1,24 @@
 package obligatoriodisenio.ObligatorioDisenio.model;
 
-import obligatoriodisenio.ObligatorioDisenio.model.Modalidad;
-import org.springframework.stereotype.Component;
+import obligatoriodisenio.ObligatorioDisenio.observador.Observable;
+
 import java.util.List;
 import java.util.ArrayList;
-import java.util.Comparator;
 
-public class Fachada {
+public class Fachada extends Observable {
     private static Fachada instancia;
     private SistemaJornadas sistemaJornadas;
     private SistemaAcceso sistemaAcceso;
     private SistemaApuestas sistemaApuestas;
+    public enum Eventos {
+        CARRERA_ACTUALIZADA,
+        APUESTA_ACTUALIZADA
+    }
 
-    public Fachada() {
+    private Fachada() {
         this.sistemaJornadas = new SistemaJornadas();
         this.sistemaAcceso = new SistemaAcceso();
+        this.sistemaApuestas = new SistemaApuestas();
     }
 
     public static Fachada getInstance() {
@@ -76,8 +80,8 @@ public class Fachada {
     }
 
     // APUESTAS
-    public void crearApuesta(Usuario usuario, Apuesta apuesta) {
-        usuario.agregarApuesta(apuesta);
+    public void crearApuesta(Jugador jugador, Apuesta apuesta) {
+        jugador.agregarApuesta(apuesta);
     }
 
     public List<Modalidad> obtenerTiposApuesta() {

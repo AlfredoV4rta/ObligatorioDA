@@ -1,4 +1,4 @@
-package obligatoriodisenio.ObligatorioDisenio.Presentadores;
+package obligatoriodisenio.ObligatorioDisenio.presentadores;
 
 public class Command {
     private String id;

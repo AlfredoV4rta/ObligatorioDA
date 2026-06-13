@@ -1,4 +1,4 @@
-package obligatoriodisenio.ObligatorioDisenio.Presentadores;
+package obligatoriodisenio.ObligatorioDisenio.presentadores;
 
 import java.util.ArrayList;
 import java.util.List;
