@@ -39,7 +39,11 @@ public class PresentadorTableroJugador implements Observador {
 
     @PostMapping("/inicio")
     public Commands inicio(HttpSession session) {
-        this.jugador = (Jugador) session.getAttribute("usuario");
+        Object usuario = session.getAttribute("usuario");
+        if (!(usuario instanceof Jugador)) {
+            return Commands.create(new Command("sesionFinalizada", ""));
+        }
+        this.jugador = (Jugador) usuario;
         fachada.agregarObservador(this);
         return Commands.create(infoJugador(), tiposApuesta(), carrerasDisponibles(), apuestasUsuario());
     }

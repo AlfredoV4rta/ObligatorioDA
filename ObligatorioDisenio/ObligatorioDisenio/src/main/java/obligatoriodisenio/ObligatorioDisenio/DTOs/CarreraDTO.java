@@ -5,10 +5,6 @@ import java.util.List;
 
 import obligatoriodisenio.ObligatorioDisenio.model.Carrera;
 
-/**
- * Carrera disponible para apostar, tal como la muestra el tablero del jugador:
- * número, fecha de la jornada y sus caballos participantes.
- */
 public class CarreraDTO {
     private int numero;
     private String fecha;

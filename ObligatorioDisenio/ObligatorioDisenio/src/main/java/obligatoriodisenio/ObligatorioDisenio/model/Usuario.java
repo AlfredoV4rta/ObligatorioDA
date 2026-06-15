@@ -37,6 +37,10 @@ public class Usuario {
         return apellido;
     }
 
+    public String getNombreCompleto() {
+        return nombre + " " + apellido;
+    }
+
     @Override
     public boolean equals(Object obj) {
         if (this == obj) return true;

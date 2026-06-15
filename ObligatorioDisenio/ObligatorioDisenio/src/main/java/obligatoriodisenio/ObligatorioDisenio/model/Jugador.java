@@ -37,4 +37,16 @@ public class Jugador extends Usuario {
     public void removerApuesta(Apuesta apuesta) {
         this.apuestas.remove(apuesta);
     }
+
+    public double getMontoTotalApostado() {
+        double total = 0;
+        for (Apuesta a : apuestas) {
+            total += a.getMonto();
+        }
+        return total;
+    }
+
+    public double getMontoTotalGanado() {
+        return 0;
+    }
 }

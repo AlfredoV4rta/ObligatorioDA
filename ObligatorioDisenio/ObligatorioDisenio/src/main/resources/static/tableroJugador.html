@@ -8,6 +8,8 @@
     * { box-sizing: border-box; }
     body { font-family: 'Segoe UI', Tahoma, sans-serif; margin: 0; background: #0f1115; color: #e8eaed; }
     header { background: #1b2030; padding: 16px 24px; display: flex; justify-content: space-between; align-items: center; }
+    header .datos-jugador { display: flex; gap: 22px; flex-wrap: wrap; align-items: center; }
+    header .datos-jugador small { color: #9fb3c8; }
     header .saldo { color: #5bd17a; font-weight: bold; }
     main { padding: 24px; display: grid; gap: 20px; max-width: 1000px; margin: 0 auto; }
     .card { background: #1b2030; border-radius: 10px; padding: 16px 20px; }
@@ -23,11 +25,15 @@
   </style>
 </head>
 <body>
-  <!-- utilesVista.js: helpers globales (crearTablaDesdeJson, mostrarMensaje, ...) -->
   <script src="/utilesVista.js"></script>
 
   <header>
-    <div><strong id="nombreJugador">—</strong> · Saldo: <span class="saldo" id="saldo">—</span></div>
+    <div class="datos-jugador">
+      <strong id="nombreJugador">—</strong>
+      <span><small>Saldo:</small> <span class="saldo" id="saldo">—</span></span>
+      <span><small>Total apostado:</small> <span id="totalApostado">—</span></span>
+      <span><small>Total ganado:</small> <span id="totalGanado">—</span></span>
+    </div>
     <button class="logout" id="btnLogout">Cerrar sesión</button>
   </header>
 
@@ -52,17 +58,17 @@
     import dispatcher from '/CommandDispatcher.js';
     import SSECommandDispatcher from '/SSECommandDispatcher.js';
 
-    /* ── 1) Registro de la vista: ciclo de vida + manejo de excepciones (HTTP 299) ── */
     const view = dispatcher.registerView('tableroJugador', {
-      urlInicio: '/tableroJugador/inicio',   // se dispara al startView()
-      urlCierre: '/tableroJugador/fin',       // se dispara al cerrar/descargar la página
+      urlInicio: '/tableroJugador/inicio',
+      urlCierre: '/tableroJugador/fin',
       onException: (msg) => mostrarMensaje(msg)
     });
 
-    /* ── 2) Handlers: el id debe COINCIDIR con el id del Command del presentador ── */
     view.handler('infoJugador', (j) => {
-      document.getElementById('nombreJugador').textContent = `${j.nombre} ${j.apellido}`;
+      document.getElementById('nombreJugador').textContent = j.nombreCompleto;
       document.getElementById('saldo').textContent = `$${j.saldo}`;
+      document.getElementById('totalApostado').textContent = `$${j.montoTotalApostado}`;
+      document.getElementById('totalGanado').textContent = `$${j.montoTotalGanado}`;
     });
 
     view.handler('tiposApuesta', (tipos) => {
@@ -92,17 +98,13 @@
         : '<p class="sin-datos">Todavía no realizaste apuestas</p>';
     });
 
-    /* Si se cierra la sesión (logout), volver al login */
     view.handler('sesionFinalizada', () => { window.location.href = '/login.html'; });
 
-    /* ── 3) Arrancar la vista → dispara /inicio (render inicial) ── */
     dispatcher.startView(view);
 
-    /* ── 4) Conectar el SSE → habilita el push de actualizar() (auto-refresh) ── */
     const sse = new SSECommandDispatcher('/tableroJugador/registrarSSE', dispatcher,
       () => console.warn('SSE cerrado por el servidor'));
 
-    /* ── Acción: cerrar sesión ── */
     document.getElementById('btnLogout').addEventListener('click', () => {
       dispatcher.submit('/logout');
     });

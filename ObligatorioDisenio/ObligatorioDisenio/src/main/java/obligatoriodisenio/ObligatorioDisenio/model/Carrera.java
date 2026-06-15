@@ -60,6 +60,6 @@ public class Carrera extends Observable {
     }
 
     public boolean estaDisponible() {
-        return this.estado == Estado.DEFINIDA;
+        return this.estado == Estado.ABIERTA || this.estado == Estado.ESTABLE;
     }
 }
