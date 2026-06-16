@@ -7,6 +7,7 @@ import obligatoriodisenio.ObligatorioDisenio.model.Apuesta;
 import obligatoriodisenio.ObligatorioDisenio.model.Participacion;
 
 public class ApuestaDTO {
+    private String fecha;
     private int nroCarrera;
     private String nombreCarrera;
     private int nroCaballo;
@@ -19,15 +20,22 @@ public class ApuestaDTO {
 
     public ApuestaDTO(Apuesta apuesta) {
         Participacion p = apuesta.getParticipacion();
+        this.fecha = apuesta.getFecha().toString();
         this.nroCarrera = p.getCarrera().getNroCarrera();
         this.nombreCarrera = p.getCarrera().getNombre();
         this.nroCaballo = p.getNroParticipacion();
         this.nombreCaballo = p.getCaballo().getNombre();
         this.montoApostado = apuesta.getMonto();
         this.tipoApuesta = apuesta.getModalidad().getNombre();
-        this.montoCobrado = 0;
-        this.dividendoFinal = 0;
-        this.estatus = "Por correr";
+        this.montoCobrado = apuesta.getMontoCobrado();
+        this.dividendoFinal = apuesta.getDividendoFinal();
+        this.estatus = p.getCarrera().getEstado().getNombre().equals("Finalizada")
+                ? "Finalizada"
+                : "Por correr";
+    }
+
+    public String getFecha() {
+        return fecha;
     }
 
     public int getNroCarrera() {

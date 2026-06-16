@@ -13,8 +13,9 @@ public class ParticipacionDTO {
     public ParticipacionDTO(Participacion participacion) {
         this.numero = participacion.getNroParticipacion();
         this.nombreCaballo = participacion.getCaballo().getNombre();
-        double div = participacion.getCaballo().getDividendo();
-        this.dividendo = (div > 1) ? String.format("%.2f", div) : "S/E";
+        this.dividendo = participacion.dividendoValido()
+                ? String.format("%.2f", participacion.getDividendo())
+                : "S/E";
     }
 
     public int getNumero() {

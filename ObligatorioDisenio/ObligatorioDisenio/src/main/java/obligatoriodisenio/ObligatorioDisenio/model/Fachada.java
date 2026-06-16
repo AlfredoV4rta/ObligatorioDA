@@ -84,6 +84,12 @@ public class Fachada extends Observable {
         jugador.agregarApuesta(apuesta);
     }
 
+    public void registrarApuesta(Jugador jugador, Participacion participacion, Modalidad modalidad,
+            double monto, String password) throws MalaPataException {
+        sistemaApuestas.registrarApuesta(jugador, participacion, modalidad, monto, password);
+        avisar(Eventos.APUESTA_ACTUALIZADA);
+    }
+
     public List<Modalidad> obtenerTiposApuesta() {
         List<Modalidad> modalidades = new ArrayList<>();
         modalidades.add(new Simple());

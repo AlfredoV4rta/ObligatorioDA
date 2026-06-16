@@ -5,25 +5,19 @@ import java.util.List;
 
 public class Caballo {
     private String nombre;
-    private double dividendo;
     private List<Participacion> participaciones;
 
     public Caballo() {
         this.participaciones = new ArrayList<>();
     }
 
-    public Caballo(String nombre, double dividendo) {
+    public Caballo(String nombre) {
         this();
         this.nombre = nombre;
-        this.dividendo = dividendo;
     }
 
     public String getNombre() {
         return nombre;
-    }
-
-    public double getDividendo() {
-        return dividendo;
     }
 
     public List<Participacion> getParticipaciones() {

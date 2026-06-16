@@ -29,6 +29,10 @@ public class Usuario {
         return contrasenia;
     }
 
+    public boolean validarContrasenia(String contrasenia) {
+        return this.contrasenia != null && this.contrasenia.equals(contrasenia);
+    }
+
     public String getNombre() {
         return nombre;
     }

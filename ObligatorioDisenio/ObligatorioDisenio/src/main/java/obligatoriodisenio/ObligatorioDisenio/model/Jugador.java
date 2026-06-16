@@ -26,6 +26,14 @@ public class Jugador extends Usuario {
         return saldo;
     }
 
+    public void descontarSaldo(double monto) {
+        this.saldo -= monto;
+    }
+
+    public void acreditarSaldo(double monto) {
+        this.saldo += monto;
+    }
+
     public List<Apuesta> getApuestas() {
         return apuestas;
     }
