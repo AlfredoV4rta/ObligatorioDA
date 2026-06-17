@@ -22,6 +22,7 @@ import obligatoriodisenio.ObligatorioDisenio.model.Participacion;
 import obligatoriodisenio.ObligatorioDisenio.observador.Observable;
 import obligatoriodisenio.ObligatorioDisenio.observador.Observador;
 import obligatoriodisenio.ObligatorioDisenio.DTOs.CarreraAdminDTO;
+import obligatoriodisenio.ObligatorioDisenio.DTOs.CarreraFinalizadaDTO;
 import obligatoriodisenio.ObligatorioDisenio.DTOs.TableroAdminDTO;
 
 @RestController
@@ -32,7 +33,7 @@ public class PresentadorTableroAdmin implements Observador {
     private ConexionNavegador conexionNavegador;
     private Administrador admin;
     private Jornada jornadaMostrada;
-    private List<Carrera> carrerasJornada;
+    private List<Carrera> listaProximas;
 
     public PresentadorTableroAdmin(Fachada fachada, ConexionNavegador conexionNavegador) {
         this.fachada = fachada;
@@ -54,7 +55,7 @@ public class PresentadorTableroAdmin implements Observador {
         this.admin = (Administrador) usuario;
         this.jornadaMostrada = fachada.getJornadaActual();
         fachada.agregarObservador(this);
-        return Commands.create(infoAdmin(), tablero(), carreras());
+        return Commands.create(infoAdmin(), tablero(), carrerasFinalizadas(), carrerasProximas());
     }
 
     @PostMapping("/fin")
@@ -68,7 +69,7 @@ public class PresentadorTableroAdmin implements Observador {
         if (jornadaMostrada != null) {
             jornadaMostrada = fachada.jornadaSiguiente(jornadaMostrada);
         }
-        return Commands.create(tablero(), carreras());
+        return Commands.create(tablero(), carrerasFinalizadas(), carrerasProximas());
     }
 
     @PostMapping("/retroceder")
@@ -76,24 +77,24 @@ public class PresentadorTableroAdmin implements Observador {
         if (jornadaMostrada != null) {
             jornadaMostrada = fachada.jornadaAnterior(jornadaMostrada);
         }
-        return Commands.create(tablero(), carreras());
+        return Commands.create(tablero(), carrerasFinalizadas(), carrerasProximas());
     }
 
     @PostMapping("/abrir")
     public Commands abrir(@RequestParam int posCarrera) throws MalaPataException {
-        fachada.abrirCarrera(carrerasJornada.get(posCarrera));
+        fachada.abrirCarrera(listaProximas.get(posCarrera));
         return Commands.create(new Command("accionRealizada", ""));
     }
 
     @PostMapping("/cerrar")
     public Commands cerrar(@RequestParam int posCarrera) throws MalaPataException {
-        fachada.cerrarCarrera(carrerasJornada.get(posCarrera));
+        fachada.cerrarCarrera(listaProximas.get(posCarrera));
         return Commands.create(new Command("accionRealizada", ""));
     }
 
     @PostMapping("/finalizar")
     public Commands finalizar(@RequestParam int posCarrera, @RequestParam int posGanador) throws MalaPataException {
-        Carrera carrera = carrerasJornada.get(posCarrera);
+        Carrera carrera = listaProximas.get(posCarrera);
         Participacion ganador = (posGanador >= 0) ? carrera.getParticipaciones().get(posGanador) : null;
         fachada.finalizarCarrera(carrera, ganador);
         return Commands.create(new Command("accionRealizada", ""));
@@ -107,13 +108,23 @@ public class PresentadorTableroAdmin implements Observador {
         return new Command("tablero", new TableroAdminDTO(jornadaMostrada, fachada.getComision()));
     }
 
-    private Command carreras() {
-        this.carrerasJornada = (jornadaMostrada != null) ? jornadaMostrada.getCarreras() : new ArrayList<>();
-        return new Command("carreras", CarreraAdminDTO.fromList(carrerasJornada));
+    private Command carrerasFinalizadas() {
+        List<Carrera> finalizadas = (jornadaMostrada != null)
+                ? new ArrayList<>(jornadaMostrada.carrerasFinalizadas())
+                : new ArrayList<>();
+        finalizadas.sort((a, b) -> b.getNroCarrera() - a.getNroCarrera());
+        return new Command("carrerasFinalizadas", CarreraFinalizadaDTO.fromList(finalizadas));
+    }
+
+    private Command carrerasProximas() {
+        this.listaProximas = (jornadaMostrada != null)
+                ? jornadaMostrada.carrerasProximas()
+                : new ArrayList<>();
+        return new Command("carrerasProximas", CarreraAdminDTO.fromList(listaProximas));
     }
 
     @Override
     public void actualizar(Observable origen, Object evento) {
-        conexionNavegador.enviarJSON(Commands.create(tablero(), carreras()));
+        conexionNavegador.enviarJSON(Commands.create(tablero(), carrerasFinalizadas(), carrerasProximas()));
     }
 }

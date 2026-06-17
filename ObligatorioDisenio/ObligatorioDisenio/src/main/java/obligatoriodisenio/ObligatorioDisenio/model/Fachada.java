@@ -57,6 +57,14 @@ public class Fachada extends Observable {
         return sistemaAcceso.buscarAdministrador(nombreUsuario, contrasenia);
     }
 
+    public void iniciarSesionAdmin(Administrador administrador) throws MalaPataException {
+        sistemaAcceso.iniciarSesionAdmin(administrador);
+    }
+
+    public void cerrarSesionAdmin(Administrador administrador) {
+        sistemaAcceso.cerrarSesionAdmin(administrador);
+    }
+
     public Jugador obtenerInfoJugador(String nombreUsuario) {
         return sistemaAcceso.obtenerInfoJugador(nombreUsuario);
     }

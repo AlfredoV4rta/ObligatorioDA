@@ -12,6 +12,7 @@ public class Cerrada extends EstadoCarrera {
         if (ganador == null)
             throw new MalaPataException("Debe indicar el caballo ganador de la carrera");
         carrera.asignarGanador(ganador);
+        carrera.marcarFinalizacion();
         carrera.cambiarEstado(new Finalizada());
     }
 }

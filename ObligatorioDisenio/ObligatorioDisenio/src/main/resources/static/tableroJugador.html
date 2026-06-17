@@ -83,22 +83,36 @@
 
   <div class="modal-bg" id="modalApuesta">
     <div class="modal">
-      <h3>Confirmar apuesta</h3>
-      <div class="linea"><span>Carrera</span><strong id="mCarrera">—</strong></div>
-      <label for="mSelCaballo">Caballo</label>
-      <select id="mSelCaballo"></select>
-      <label for="mSelTipo">Tipo de apuesta</label>
-      <select id="mSelTipo"></select>
-      <label for="mInpMonto">Monto a apostar</label>
-      <input type="number" id="mInpMonto" min="1" placeholder="0" />
-      <div class="linea" style="margin-top:10px;"><span>Dividendo actual</span><strong id="mDividendo">—</strong></div>
-      <div class="linea"><span>Monto a debitar del saldo</span><strong id="mCosto">—</strong></div>
-      <div class="cobraria">Cobrarías si gana: $<span id="mCobraria">0</span></div>
-      <label for="mPassword">Ingresá tu contraseña</label>
-      <input type="password" id="mPassword" placeholder="Contraseña" />
-      <div class="acciones">
-        <button class="btn-confirmar" id="btnConfirmar">Confirmar apuesta</button>
-        <button class="btn-descartar" id="btnDescartar">Descartar</button>
+      <h3 id="modalTitulo">Realizar apuesta</h3>
+
+      <div id="faseSeleccion">
+        <div class="linea"><span>Carrera</span><strong id="mCarrera">—</strong></div>
+        <label for="mSelCaballo">Caballo</label>
+        <select id="mSelCaballo"></select>
+        <label for="mSelTipo">Tipo de apuesta</label>
+        <select id="mSelTipo"></select>
+        <label for="mInpMonto">Monto a apostar</label>
+        <input type="number" id="mInpMonto" placeholder="0" />
+        <div class="acciones">
+          <button class="btn-confirmar" id="btnRealizar">Realizar apuesta</button>
+          <button class="btn-descartar" id="btnCancelar">Cancelar</button>
+        </div>
+      </div>
+
+      <div id="faseConfirmacion" style="display:none;">
+        <div class="linea"><span>Carrera</span><strong id="cCarrera">—</strong></div>
+        <div class="linea"><span>Caballo</span><strong id="cCaballo">—</strong></div>
+        <div class="linea"><span>Dividendo actual</span><strong id="cDividendo">—</strong></div>
+        <div class="linea"><span>Tipo</span><strong id="cTipo">—</strong></div>
+        <div class="linea"><span>Monto apostado</span><strong id="cMonto">—</strong></div>
+        <div class="linea"><span>Monto a debitar del saldo</span><strong id="cDebitar">—</strong></div>
+        <div class="cobraria">Cobrarías si gana: $<span id="cCobraria">0</span></div>
+        <label for="cPassword">Ingresá tu contraseña</label>
+        <input type="password" id="cPassword" placeholder="Contraseña" />
+        <div class="acciones">
+          <button class="btn-confirmar" id="btnConfirmar">Confirmar apuesta</button>
+          <button class="btn-descartar" id="btnDescartar">Descartar</button>
+        </div>
       </div>
     </div>
   </div>
@@ -107,7 +121,6 @@
     import dispatcher from '/CommandDispatcher.js';
     import SSECommandDispatcher from '/SSECommandDispatcher.js';
 
-    const COSTO = { Simple: 1, Triple: 1.5, Super: 2 };
     let carreras = [];
     let tipos = [];
     let carreraActual = -1;
@@ -170,7 +183,20 @@
       cont.innerHTML = html + '</tbody></table>';
     });
 
+    view.handler('confirmacionApuesta', (c) => {
+      document.getElementById('cCarrera').textContent = `#${c.nroCarrera} — ${c.nombreCarrera}`;
+      document.getElementById('cCaballo').textContent = `${c.nroCaballo} - ${c.nombreCaballo}`;
+      document.getElementById('cDividendo').textContent = c.dividendoActual;
+      document.getElementById('cTipo').textContent = c.tipoApuesta;
+      document.getElementById('cMonto').textContent = `$${c.monto}`;
+      document.getElementById('cDebitar').textContent = `$${c.montoADebitar}`;
+      document.getElementById('cCobraria').textContent = c.cobrariaSiGana;
+      document.getElementById('cPassword').value = '';
+      mostrarFase('confirmacion');
+    });
+
     view.handler('apuestaConfirmada', () => cerrarModal());
+    view.handler('apuestaDescartada', () => cerrarModal());
     view.handler('sesionFinalizada', () => { window.location.href = '/login.html'; });
 
     dispatcher.startView(view);
@@ -186,41 +212,36 @@
         c.caballos.map((cab, i) => `<option value="${i}">${cab.numero} - ${cab.nombreCaballo}</option>`).join('');
       document.getElementById('mSelTipo').selectedIndex = 0;
       document.getElementById('mInpMonto').value = '';
-      document.getElementById('mPassword').value = '';
-      actualizarPreview();
+      mostrarFase('seleccion');
       document.getElementById('modalApuesta').style.display = 'flex';
     }
 
-    function actualizarPreview() {
-      const c = carreras[carreraActual];
-      if (!c) return;
-      const cab = c.caballos[parseInt(document.getElementById('mSelCaballo').value) || 0];
-      const tipo = tipos[parseInt(document.getElementById('mSelTipo').value) || 0]?.nombre || 'Simple';
-      const monto = parseFloat(document.getElementById('mInpMonto').value) || 0;
-      const div = parseFloat(cab.dividendo);
-      document.getElementById('mDividendo').textContent = cab.dividendo;
-      document.getElementById('mCosto').textContent = `$${monto * (COSTO[tipo] || 1)}`;
-      document.getElementById('mCobraria').textContent = isNaN(div) ? '—' : Math.round(monto * div);
+    function mostrarFase(fase) {
+      document.getElementById('faseSeleccion').style.display = (fase === 'seleccion') ? 'block' : 'none';
+      document.getElementById('faseConfirmacion').style.display = (fase === 'confirmacion') ? 'block' : 'none';
     }
 
-    document.getElementById('mSelCaballo').addEventListener('change', actualizarPreview);
-    document.getElementById('mSelTipo').addEventListener('change', actualizarPreview);
-    document.getElementById('mInpMonto').addEventListener('input', actualizarPreview);
-
     function cerrarModal() { document.getElementById('modalApuesta').style.display = 'none'; }
-    document.getElementById('btnDescartar').addEventListener('click', cerrarModal);
 
-    document.getElementById('btnConfirmar').addEventListener('click', () => {
-      const monto = parseFloat(document.getElementById('mInpMonto').value);
-      if (isNaN(monto) || monto < 1) { mostrarMensaje('Ingresá un monto válido'); return; }
-      dispatcher.submit('/tableroJugador/apostar', {
+    document.getElementById('btnCancelar').addEventListener('click', cerrarModal);
+
+    document.getElementById('btnRealizar').addEventListener('click', () => {
+      dispatcher.submit('/tableroJugador/prepararApuesta', {
         posCarrera: carreraActual,
         posCaballo: parseInt(document.getElementById('mSelCaballo').value),
         posModalidad: parseInt(document.getElementById('mSelTipo').value),
-        monto: monto,
-        password: document.getElementById('mPassword').value
+        monto: parseFloat(document.getElementById('mInpMonto').value) || 0
       });
     });
+
+    document.getElementById('btnConfirmar').addEventListener('click', () => {
+      dispatcher.submit('/tableroJugador/confirmarApuesta', {
+        password: document.getElementById('cPassword').value
+      });
+    });
+
+    document.getElementById('btnDescartar').addEventListener('click', () =>
+      dispatcher.submit('/tableroJugador/descartarApuesta'));
 
     document.getElementById('btnLogout').addEventListener('click', () => dispatcher.submit('/logout'));
   </script>

@@ -69,4 +69,24 @@ public class Jornada {
         }
         return cant;
     }
+
+    public List<Carrera> carrerasFinalizadas() {
+        List<Carrera> result = new ArrayList<>();
+        for (Carrera c : carreras) {
+            if (c.estaFinalizada()) {
+                result.add(c);
+            }
+        }
+        return result;
+    }
+
+    public List<Carrera> carrerasProximas() {
+        List<Carrera> result = new ArrayList<>();
+        for (Carrera c : carreras) {
+            if (!c.estaFinalizada()) {
+                result.add(c);
+            }
+        }
+        return result;
+    }
 }

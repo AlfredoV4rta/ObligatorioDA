@@ -6,10 +6,12 @@ import java.util.List;
 public class SistemaAcceso {
     private List<Jugador> jugadores;
     private List<Administrador> administradores;
+    private List<Administrador> adminsConectados;
 
     public SistemaAcceso() {
         this.jugadores = new ArrayList<>();
         this.administradores = new ArrayList<>();
+        this.adminsConectados = new ArrayList<>();
     }
 
     public List<Administrador> getAdministradores() {
@@ -65,5 +67,16 @@ public class SistemaAcceso {
             }
         }
         return null;
+    }
+
+    public void iniciarSesionAdmin(Administrador administrador) throws MalaPataException {
+        if (adminsConectados.contains(administrador)) {
+            throw new MalaPataException("Este administrador ya tiene una sesión abierta");
+        }
+        adminsConectados.add(administrador);
+    }
+
+    public void cerrarSesionAdmin(Administrador administrador) {
+        adminsConectados.remove(administrador);
     }
 }

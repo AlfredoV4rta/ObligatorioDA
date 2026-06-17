@@ -65,8 +65,13 @@
     </section>
 
     <section>
-      <h2 class="seccion-titulo">Carreras de la jornada</h2>
-      <div id="carreras"><p class="sin-datos">Cargando…</p></div>
+      <h2 class="seccion-titulo">Carreras finalizadas</h2>
+      <div id="carrerasFinalizadas"><p class="sin-datos">Cargando…</p></div>
+    </section>
+
+    <section>
+      <h2 class="seccion-titulo">Próximas carreras</h2>
+      <div id="carrerasProximas"><p class="sin-datos">Cargando…</p></div>
     </section>
   </main>
 
@@ -90,7 +95,7 @@
     import dispatcher from '/CommandDispatcher.js';
     import SSECommandDispatcher from '/SSECommandDispatcher.js';
 
-    let carreras = [];
+    let proximas = [];
     let carreraActual = -1;
 
     const view = dispatcher.registerView('tableroAdmin', {
@@ -114,12 +119,22 @@
       document.getElementById('stFaltan').textContent = t.faltanCorrer;
     });
 
-    view.handler('carreras', (data) => {
-      carreras = data || [];
-      const cont = document.getElementById('carreras');
-      if (!carreras.length) { cont.innerHTML = '<p class="sin-datos">No hay carreras en esta jornada</p>'; return; }
+    view.handler('carrerasFinalizadas', (finalizadas) => {
+      const cont = document.getElementById('carrerasFinalizadas');
+      if (!finalizadas || !finalizadas.length) { cont.innerHTML = '<p class="sin-datos">Ninguna carrera finalizada todavía</p>'; return; }
+      let html = '<table><thead><tr><th>N°</th><th>Carrera</th><th>Hora fin</th><th>Caballos</th><th>Total apostado</th><th>Total pagado</th><th>Ganador</th><th>Dividendo final</th></tr></thead><tbody>';
+      for (const c of finalizadas) {
+        html += `<tr><td>${c.numero}</td><td>${c.nombre}</td><td>${c.horaFinalizacion}</td><td>${c.cantidadCaballos}</td><td>$${c.totalApostado}</td><td>$${c.totalPagado}</td><td>${c.caballoGanador}</td><td>${c.dividendoFinal}</td></tr>`;
+      }
+      cont.innerHTML = html + '</tbody></table>';
+    });
+
+    view.handler('carrerasProximas', (data) => {
+      proximas = data || [];
+      const cont = document.getElementById('carrerasProximas');
+      if (!proximas.length) { cont.innerHTML = '<p class="sin-datos">No hay próximas carreras en esta jornada</p>'; return; }
       let html = '<table><thead><tr><th>N°</th><th>Carrera</th><th>Estado</th><th>Caballos</th><th>Total apostado</th><th>Apuestas</th><th></th></tr></thead><tbody>';
-      carreras.forEach((c, i) => {
+      proximas.forEach((c, i) => {
         html += `<tr>
           <td>${c.numero}</td><td>${c.nombre}</td><td>${c.estado}</td>
           <td>${c.cantidadCaballos}</td><td>$${c.totalApostado}</td><td>${c.cantidadApuestas}</td>
@@ -143,7 +158,7 @@
 
     function abrirGestion(posCarrera) {
       carreraActual = posCarrera;
-      const c = carreras[posCarrera];
+      const c = proximas[posCarrera];
       document.getElementById('gTitulo').textContent = `Gestionar carrera #${c.numero} — ${c.nombre}`;
       document.getElementById('gSub').textContent = `Estado: ${c.estado} · Total apostado: $${c.totalApostado}`;
       let html = '<table><thead><tr><th>N°</th><th>Caballo</th><th>Dividendo</th><th>Total apostado</th><th>Apuestas</th></tr></thead><tbody>';

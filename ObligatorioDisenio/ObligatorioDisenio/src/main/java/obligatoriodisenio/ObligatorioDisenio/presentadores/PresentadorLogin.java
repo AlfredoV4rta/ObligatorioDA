@@ -10,6 +10,7 @@ import jakarta.servlet.http.HttpSession;
 import obligatoriodisenio.ObligatorioDisenio.model.Administrador;
 import obligatoriodisenio.ObligatorioDisenio.model.Fachada;
 import obligatoriodisenio.ObligatorioDisenio.model.Jugador;
+import obligatoriodisenio.ObligatorioDisenio.model.MalaPataException;
 import obligatoriodisenio.ObligatorioDisenio.model.Usuario;
 import obligatoriodisenio.ObligatorioDisenio.presentadores.Command;
 import obligatoriodisenio.ObligatorioDisenio.presentadores.Commands;
@@ -32,7 +33,7 @@ public class PresentadorLogin {
     @PostMapping("/login")
     public Commands login(@RequestParam String nombreUsuario,
             @RequestParam String contrasenia,
-            HttpSession session) {
+            HttpSession session) throws MalaPataException {
         Jugador jugador = fachada.buscarJugador(nombreUsuario, contrasenia);
         if (jugador != null) {
             session.setAttribute("usuario", jugador);
@@ -41,6 +42,7 @@ public class PresentadorLogin {
 
         Administrador admin = fachada.buscarAdministrador(nombreUsuario, contrasenia);
         if (admin != null) {
+            fachada.iniciarSesionAdmin(admin);
             session.setAttribute("usuario", admin);
             return Commands.create(new Command("accesoAdmin", ""));
         }
@@ -49,6 +51,10 @@ public class PresentadorLogin {
 
     @PostMapping("/logout")
     public Commands logout(HttpSession session) {
+        Object usuario = session.getAttribute("usuario");
+        if (usuario instanceof Administrador) {
+            fachada.cerrarSesionAdmin((Administrador) usuario);
+        }
         session.invalidate();
         return Commands.create(
                 new Command("sesionFinalizada", "Sesión cerrada"));

@@ -1,5 +1,6 @@
 package obligatoriodisenio.ObligatorioDisenio.model;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,6 +13,7 @@ public class Carrera extends Observable {
     private int nroCarrera;
     private String nombre;
     private Participacion participacionGanadora;
+    private LocalDateTime horaFinalizacion;
 
     public Carrera() {
         this.participaciones = new ArrayList<>();
@@ -64,6 +66,14 @@ public class Carrera extends Observable {
 
     public void asignarGanador(Participacion ganador) {
         this.participacionGanadora = ganador;
+    }
+
+    public void marcarFinalizacion() {
+        this.horaFinalizacion = LocalDateTime.now();
+    }
+
+    public LocalDateTime getHoraFinalizacion() {
+        return horaFinalizacion;
     }
 
     public void abrir() throws MalaPataException {

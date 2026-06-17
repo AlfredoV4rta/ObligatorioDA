@@ -1,5 +1,7 @@
 package obligatoriodisenio.ObligatorioDisenio.presentadores;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.springframework.http.MediaType;
@@ -22,6 +24,7 @@ import obligatoriodisenio.ObligatorioDisenio.observador.Observable;
 import obligatoriodisenio.ObligatorioDisenio.observador.Observador;
 import obligatoriodisenio.ObligatorioDisenio.DTOs.ApuestaDTO;
 import obligatoriodisenio.ObligatorioDisenio.DTOs.CarreraDTO;
+import obligatoriodisenio.ObligatorioDisenio.DTOs.ConfirmacionApuestaDTO;
 import obligatoriodisenio.ObligatorioDisenio.DTOs.JugadorDTO;
 import obligatoriodisenio.ObligatorioDisenio.DTOs.ModalidadDTO;
 
@@ -34,6 +37,9 @@ public class PresentadorTableroJugador implements Observador {
     private Jugador jugador;
     private List<Carrera> carrerasDisponibles;
     private List<Modalidad> tiposApuesta;
+    private Participacion participacionEnCurso;
+    private Modalidad modalidadEnCurso;
+    private double montoEnCurso;
 
     public PresentadorTableroJugador(Fachada fachada, ConexionNavegador conexionNavegador) {
         this.fachada = fachada;
@@ -63,15 +69,37 @@ public class PresentadorTableroJugador implements Observador {
         return Commands.create();
     }
 
-    @PostMapping("/apostar")
-    public Commands apostar(@RequestParam int posCarrera, @RequestParam int posCaballo,
-            @RequestParam int posModalidad, @RequestParam double monto,
-            @RequestParam String password) throws MalaPataException {
+    @PostMapping("/prepararApuesta")
+    public Commands prepararApuesta(@RequestParam int posCarrera, @RequestParam int posCaballo,
+            @RequestParam int posModalidad, @RequestParam double monto) {
         Carrera carrera = carrerasDisponibles.get(posCarrera);
-        Participacion participacion = carrera.getParticipaciones().get(posCaballo);
-        Modalidad modalidad = tiposApuesta.get(posModalidad);
-        fachada.registrarApuesta(jugador, participacion, modalidad, monto, password);
+        this.participacionEnCurso = carrera.getParticipaciones().get(posCaballo);
+        this.modalidadEnCurso = tiposApuesta.get(posModalidad);
+        this.montoEnCurso = monto;
+        return Commands.create(new Command("confirmacionApuesta",
+                new ConfirmacionApuestaDTO(participacionEnCurso, modalidadEnCurso, montoEnCurso)));
+    }
+
+    @PostMapping("/confirmarApuesta")
+    public Commands confirmarApuesta(@RequestParam String password) throws MalaPataException {
+        if (participacionEnCurso == null) {
+            throw new MalaPataException("No hay apuesta en curso");
+        }
+        fachada.registrarApuesta(jugador, participacionEnCurso, modalidadEnCurso, montoEnCurso, password);
+        limpiarApuestaEnCurso();
         return Commands.create(new Command("apuestaConfirmada", ""));
+    }
+
+    @PostMapping("/descartarApuesta")
+    public Commands descartarApuesta() {
+        limpiarApuestaEnCurso();
+        return Commands.create(new Command("apuestaDescartada", ""));
+    }
+
+    private void limpiarApuestaEnCurso() {
+        this.participacionEnCurso = null;
+        this.modalidadEnCurso = null;
+        this.montoEnCurso = 0;
     }
 
     private Command infoJugador() {
@@ -89,8 +117,9 @@ public class PresentadorTableroJugador implements Observador {
     }
 
     private Command apuestasUsuario() {
-        return new Command("apuestasUsuario",
-                ApuestaDTO.fromList(fachada.obtenerApuestasUsuario(jugador.getNombreUsuario())));
+        var apuestas = new ArrayList<>(fachada.obtenerApuestasUsuario(jugador.getNombreUsuario()));
+        Collections.reverse(apuestas);
+        return new Command("apuestasUsuario", ApuestaDTO.fromList(apuestas));
     }
 
     @Override
