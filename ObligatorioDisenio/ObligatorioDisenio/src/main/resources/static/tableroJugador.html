@@ -6,57 +6,111 @@
   <title>MalaPATA — Tablero del Jugador</title>
   <style>
     * { box-sizing: border-box; }
-    body { font-family: 'Segoe UI', Tahoma, sans-serif; margin: 0; background: #0f1115; color: #e8eaed; }
-    header { background: #1b2030; padding: 16px 24px; display: flex; justify-content: space-between; align-items: center; }
-    header .datos-jugador { display: flex; gap: 22px; flex-wrap: wrap; align-items: center; }
-    header .datos-jugador small { color: #9fb3c8; }
-    header .saldo { color: #5bd17a; font-weight: bold; }
-    main { padding: 24px; display: grid; gap: 20px; max-width: 1000px; margin: 0 auto; }
-    .card { background: #1b2030; border-radius: 10px; padding: 16px 20px; }
-    .card h2 { margin: 0 0 12px; font-size: 15px; color: #9fb3c8; text-transform: uppercase; letter-spacing: .5px; }
-    .chips span { display: inline-block; background: #2a3142; border-radius: 14px; padding: 4px 14px; margin: 0 8px 8px 0; font-size: 14px; }
-    .carrera { border: 1px solid #2a3142; border-radius: 8px; padding: 12px 14px; margin-bottom: 12px; }
-    .carrera h3 { margin: 0 0 8px; font-size: 14px; }
+    body { font-family: 'Segoe UI', Tahoma, sans-serif; margin: 0; background: #0d1017; color: #e8eaed; }
+    .topbar { background: #12182a; padding: 14px 24px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #232c43; }
+    .brand { font-weight: 800; letter-spacing: 1px; color: #f1c40f; font-size: 18px; }
+    .topbar-right { display: flex; align-items: center; gap: 16px; }
+    .saldo-pill { background: #15351f; color: #5bd17a; font-weight: 700; padding: 6px 14px; border-radius: 20px; }
+    button { border: none; border-radius: 6px; padding: 9px 16px; cursor: pointer; font-weight: 600; }
+    .btn-logout { background: #c0392b; color: #fff; }
+    main { padding: 24px; max-width: 1100px; margin: 0 auto; display: grid; gap: 22px; }
+    .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+    .stat { background: #12182a; border-radius: 10px; padding: 16px 18px; }
+    .stat .label { font-size: 12px; color: #8aa0bd; text-transform: uppercase; letter-spacing: .5px; }
+    .stat .valor { font-size: 22px; font-weight: 700; margin-top: 4px; }
+    .stat .valor.verde { color: #5bd17a; }
+    .seccion-titulo { font-size: 14px; color: #9fb3c8; text-transform: uppercase; letter-spacing: .5px; margin: 0 0 12px; }
+    .chips span { display: inline-block; background: #232c43; border-radius: 16px; padding: 5px 16px; margin: 0 8px 8px 0; font-size: 14px; }
+    .carreras-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
+    .carrera-card { background: #12182a; border: 1px solid #232c43; border-radius: 10px; padding: 14px 16px; display: flex; flex-direction: column; }
+    .carrera-card h3 { margin: 0 0 10px; font-size: 15px; }
     table { width: 100%; border-collapse: collapse; }
-    th, td { padding: 6px 10px; text-align: left; border-bottom: 1px solid #2a3142; font-size: 14px; }
-    th { color: #9fb3c8; font-weight: 600; }
+    th, td { padding: 6px 8px; text-align: left; border-bottom: 1px solid #232c43; font-size: 13px; }
+    th { color: #8aa0bd; font-weight: 600; }
+    .btn-apostar { background: #f1c40f; color: #12182a; margin-top: 12px; }
     .sin-datos { color: #7a8699; font-style: italic; }
-    button.logout { background: #c0392b; color: #fff; border: none; border-radius: 6px; padding: 8px 14px; cursor: pointer; }
+    .badge { padding: 3px 10px; border-radius: 12px; font-size: 12px; font-weight: 700; }
+    .badge-correr { background: #3a2f12; color: #f1c40f; }
+    .badge-fin { background: #15351f; color: #5bd17a; }
+    .modal-bg { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.65); justify-content: center; align-items: center; z-index: 1000; }
+    .modal { background: #12182a; border: 1px solid #232c43; border-radius: 12px; padding: 24px; width: 92%; max-width: 440px; }
+    .modal h3 { margin: 0 0 16px; }
+    .modal label { display: block; font-size: 12px; color: #8aa0bd; margin: 10px 0 4px; }
+    .modal select, .modal input { width: 100%; padding: 8px; background: #0d1017; color: #e8eaed; border: 1px solid #232c43; border-radius: 6px; }
+    .modal .linea { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #232c43; font-size: 14px; }
+    .cobraria { text-align: center; background: #15351f; color: #5bd17a; border-radius: 8px; padding: 12px; margin: 14px 0; font-weight: 700; }
+    .modal .acciones { display: flex; gap: 12px; margin-top: 16px; }
+    .modal .acciones button { flex: 1; }
+    .btn-confirmar { background: #f1c40f; color: #12182a; }
+    .btn-descartar { background: #232c43; color: #e8eaed; }
   </style>
 </head>
 <body>
   <script src="/utilesVista.js"></script>
 
-  <header>
-    <div class="datos-jugador">
+  <div class="topbar">
+    <div class="brand">🐎 MalaPATA</div>
+    <div class="topbar-right">
+      <span class="saldo-pill">Saldo $<span id="saldoPill">—</span></span>
       <strong id="nombreJugador">—</strong>
-      <span><small>Saldo:</small> <span class="saldo" id="saldo">—</span></span>
-      <span><small>Total apostado:</small> <span id="totalApostado">—</span></span>
-      <span><small>Total ganado:</small> <span id="totalGanado">—</span></span>
+      <button class="btn-logout" id="btnLogout">Cerrar sesión</button>
     </div>
-    <button class="logout" id="btnLogout">Cerrar sesión</button>
-  </header>
+  </div>
 
   <main>
-    <section class="card">
-      <h2>Tipos de apuesta</h2>
+    <section class="stats">
+      <div class="stat"><div class="label">Jugador</div><div class="valor" id="stJugador">—</div></div>
+      <div class="stat"><div class="label">Saldo actual</div><div class="valor verde" id="stSaldo">—</div></div>
+      <div class="stat"><div class="label">Total apostado</div><div class="valor" id="stApostado">—</div></div>
+      <div class="stat"><div class="label">Total ganado</div><div class="valor" id="stGanado">—</div></div>
+    </section>
+
+    <section>
+      <h2 class="seccion-titulo">Carreras disponibles para apostar</h2>
+      <div class="carreras-grid" id="carreras"><p class="sin-datos">Cargando…</p></div>
+    </section>
+
+    <section>
+      <h2 class="seccion-titulo">Tipos de apuesta disponibles</h2>
       <div class="chips" id="tiposApuesta"><span class="sin-datos">Cargando…</span></div>
     </section>
 
-    <section class="card">
-      <h2>Carreras disponibles para apostar</h2>
-      <div id="carreras"><p class="sin-datos">Cargando…</p></div>
-    </section>
-
-    <section class="card">
-      <h2>Mis apuestas</h2>
+    <section>
+      <h2 class="seccion-titulo">Mis apuestas</h2>
       <div id="misApuestas"><p class="sin-datos">Cargando…</p></div>
     </section>
   </main>
 
+  <div class="modal-bg" id="modalApuesta">
+    <div class="modal">
+      <h3>Confirmar apuesta</h3>
+      <div class="linea"><span>Carrera</span><strong id="mCarrera">—</strong></div>
+      <label for="mSelCaballo">Caballo</label>
+      <select id="mSelCaballo"></select>
+      <label for="mSelTipo">Tipo de apuesta</label>
+      <select id="mSelTipo"></select>
+      <label for="mInpMonto">Monto a apostar</label>
+      <input type="number" id="mInpMonto" min="1" placeholder="0" />
+      <div class="linea" style="margin-top:10px;"><span>Dividendo actual</span><strong id="mDividendo">—</strong></div>
+      <div class="linea"><span>Monto a debitar del saldo</span><strong id="mCosto">—</strong></div>
+      <div class="cobraria">Cobrarías si gana: $<span id="mCobraria">0</span></div>
+      <label for="mPassword">Ingresá tu contraseña</label>
+      <input type="password" id="mPassword" placeholder="Contraseña" />
+      <div class="acciones">
+        <button class="btn-confirmar" id="btnConfirmar">Confirmar apuesta</button>
+        <button class="btn-descartar" id="btnDescartar">Descartar</button>
+      </div>
+    </div>
+  </div>
+
   <script type="module">
     import dispatcher from '/CommandDispatcher.js';
     import SSECommandDispatcher from '/SSECommandDispatcher.js';
+
+    const COSTO = { Simple: 1, Triple: 1.5, Super: 2 };
+    let carreras = [];
+    let tipos = [];
+    let carreraActual = -1;
 
     const view = dispatcher.registerView('tableroJugador', {
       urlInicio: '/tableroJugador/inicio',
@@ -66,38 +120,57 @@
 
     view.handler('infoJugador', (j) => {
       document.getElementById('nombreJugador').textContent = j.nombreCompleto;
-      document.getElementById('saldo').textContent = `$${j.saldo}`;
-      document.getElementById('totalApostado').textContent = `$${j.montoTotalApostado}`;
-      document.getElementById('totalGanado').textContent = `$${j.montoTotalGanado}`;
+      document.getElementById('stJugador').textContent = j.nombreCompleto;
+      document.getElementById('saldoPill').textContent = j.saldo;
+      document.getElementById('stSaldo').textContent = `$${j.saldo}`;
+      document.getElementById('stApostado').textContent = `$${j.montoTotalApostado}`;
+      document.getElementById('stGanado').textContent = `$${j.montoTotalGanado}`;
     });
 
-    view.handler('tiposApuesta', (tipos) => {
-      const cont = document.getElementById('tiposApuesta');
-      cont.innerHTML = (tipos && tipos.length)
+    view.handler('tiposApuesta', (data) => {
+      tipos = data || [];
+      document.getElementById('tiposApuesta').innerHTML = tipos.length
         ? tipos.map(t => `<span>${t.nombre}</span>`).join('')
         : '<span class="sin-datos">—</span>';
+      document.getElementById('mSelTipo').innerHTML =
+        tipos.map((t, i) => `<option value="${i}">${t.nombre}</option>`).join('');
     });
 
-    view.handler('carrerasDisponibles', (carreras) => {
+    view.handler('carrerasDisponibles', (data) => {
+      carreras = data || [];
       const cont = document.getElementById('carreras');
-      if (!carreras || carreras.length === 0) {
-        cont.innerHTML = '<p class="sin-datos">No hay carreras abiertas</p>';
-        return;
-      }
-      cont.innerHTML = carreras.map(c => `
-        <div class="carrera">
+      if (!carreras.length) { cont.innerHTML = '<p class="sin-datos">No hay carreras abiertas</p>'; return; }
+      cont.innerHTML = carreras.map((c, i) => `
+        <div class="carrera-card">
           <h3>Carrera #${c.numero} — ${c.fecha}</h3>
-          ${crearTablaDesdeJson(c.caballos)}
+          <table>
+            <thead><tr><th>N°</th><th>Caballo</th><th>Dividendo</th></tr></thead>
+            <tbody>
+              ${c.caballos.map(cab => `<tr><td>${cab.numero}</td><td>${cab.nombreCaballo}</td><td>${cab.dividendo}</td></tr>`).join('')}
+            </tbody>
+          </table>
+          <button class="btn-apostar" data-carrera="${i}">Apostar</button>
         </div>`).join('');
+      cont.querySelectorAll('.btn-apostar').forEach(btn =>
+        btn.addEventListener('click', () => abrirModal(parseInt(btn.dataset.carrera))));
     });
 
     view.handler('apuestasUsuario', (apuestas) => {
       const cont = document.getElementById('misApuestas');
-      cont.innerHTML = (apuestas && apuestas.length)
-        ? crearTablaDesdeJson(apuestas)
-        : '<p class="sin-datos">Todavía no realizaste apuestas</p>';
+      if (!apuestas || !apuestas.length) { cont.innerHTML = '<p class="sin-datos">Todavía no realizaste apuestas</p>'; return; }
+      let html = '<table><thead><tr><th>Fecha</th><th>N° Carrera</th><th>Carrera</th><th>N° Caballo</th><th>Caballo</th><th>Monto</th><th>Tipo</th><th>Div. Final</th><th>Cobrado</th><th>Estado</th></tr></thead><tbody>';
+      for (const a of apuestas) {
+        const clase = a.estatus === 'Finalizada' ? 'badge-fin' : 'badge-correr';
+        html += `<tr>
+          <td>${a.fecha}</td><td>${a.nroCarrera}</td><td>${a.nombreCarrera}</td>
+          <td>${a.nroCaballo}</td><td>${a.nombreCaballo}</td><td>$${a.montoApostado}</td>
+          <td>${a.tipoApuesta}</td><td>${a.dividendoFinal}</td><td>$${a.montoCobrado}</td>
+          <td><span class="badge ${clase}">${a.estatus}</span></td></tr>`;
+      }
+      cont.innerHTML = html + '</tbody></table>';
     });
 
+    view.handler('apuestaConfirmada', () => cerrarModal());
     view.handler('sesionFinalizada', () => { window.location.href = '/login.html'; });
 
     dispatcher.startView(view);
@@ -105,9 +178,51 @@
     const sse = new SSECommandDispatcher('/tableroJugador/registrarSSE', dispatcher,
       () => console.warn('SSE cerrado por el servidor'));
 
-    document.getElementById('btnLogout').addEventListener('click', () => {
-      dispatcher.submit('/logout');
+    function abrirModal(posCarrera) {
+      carreraActual = posCarrera;
+      const c = carreras[posCarrera];
+      document.getElementById('mCarrera').textContent = `#${c.numero} — ${c.fecha}`;
+      document.getElementById('mSelCaballo').innerHTML =
+        c.caballos.map((cab, i) => `<option value="${i}">${cab.numero} - ${cab.nombreCaballo}</option>`).join('');
+      document.getElementById('mSelTipo').selectedIndex = 0;
+      document.getElementById('mInpMonto').value = '';
+      document.getElementById('mPassword').value = '';
+      actualizarPreview();
+      document.getElementById('modalApuesta').style.display = 'flex';
+    }
+
+    function actualizarPreview() {
+      const c = carreras[carreraActual];
+      if (!c) return;
+      const cab = c.caballos[parseInt(document.getElementById('mSelCaballo').value) || 0];
+      const tipo = tipos[parseInt(document.getElementById('mSelTipo').value) || 0]?.nombre || 'Simple';
+      const monto = parseFloat(document.getElementById('mInpMonto').value) || 0;
+      const div = parseFloat(cab.dividendo);
+      document.getElementById('mDividendo').textContent = cab.dividendo;
+      document.getElementById('mCosto').textContent = `$${monto * (COSTO[tipo] || 1)}`;
+      document.getElementById('mCobraria').textContent = isNaN(div) ? '—' : Math.round(monto * div);
+    }
+
+    document.getElementById('mSelCaballo').addEventListener('change', actualizarPreview);
+    document.getElementById('mSelTipo').addEventListener('change', actualizarPreview);
+    document.getElementById('mInpMonto').addEventListener('input', actualizarPreview);
+
+    function cerrarModal() { document.getElementById('modalApuesta').style.display = 'none'; }
+    document.getElementById('btnDescartar').addEventListener('click', cerrarModal);
+
+    document.getElementById('btnConfirmar').addEventListener('click', () => {
+      const monto = parseFloat(document.getElementById('mInpMonto').value);
+      if (isNaN(monto) || monto < 1) { mostrarMensaje('Ingresá un monto válido'); return; }
+      dispatcher.submit('/tableroJugador/apostar', {
+        posCarrera: carreraActual,
+        posCaballo: parseInt(document.getElementById('mSelCaballo').value),
+        posModalidad: parseInt(document.getElementById('mSelTipo').value),
+        monto: monto,
+        password: document.getElementById('mPassword').value
+      });
     });
+
+    document.getElementById('btnLogout').addEventListener('click', () => dispatcher.submit('/logout'));
   </script>
 </body>
 </html>

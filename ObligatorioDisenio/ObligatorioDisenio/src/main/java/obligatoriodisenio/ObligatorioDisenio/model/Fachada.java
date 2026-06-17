@@ -40,12 +40,7 @@ public class Fachada extends Observable {
         return sistemaApuestas;
     }
 
-    // Métodos de negocio
     // ACCESO
-    public Usuario login(String nombreUsuario, String contrasenia) {
-        return sistemaAcceso.buscarJugador(nombreUsuario, contrasenia);
-    }
-
     public void registrarJugador(Jugador usuario) {
         sistemaAcceso.agregarJugador(usuario);
     }
@@ -79,11 +74,39 @@ public class Fachada extends Observable {
         return sistemaJornadas.obtenerCarrerasDisponibles();
     }
 
-    // APUESTAS
-    public void crearApuesta(Jugador jugador, Apuesta apuesta) {
-        jugador.agregarApuesta(apuesta);
+    public Jornada getJornadaActual() {
+        return sistemaJornadas.getJornadaActual();
     }
 
+    public Jornada jornadaSiguiente(Jornada jornada) {
+        return sistemaJornadas.jornadaSiguiente(jornada);
+    }
+
+    public Jornada jornadaAnterior(Jornada jornada) {
+        return sistemaJornadas.jornadaAnterior(jornada);
+    }
+
+    public double getComision() {
+        return sistemaApuestas.getComision();
+    }
+
+    public void abrirCarrera(Carrera carrera) throws MalaPataException {
+        carrera.abrir();
+        avisar(Eventos.CARRERA_ACTUALIZADA);
+    }
+
+    public void cerrarCarrera(Carrera carrera) throws MalaPataException {
+        carrera.cerrar();
+        avisar(Eventos.CARRERA_ACTUALIZADA);
+    }
+
+    public void finalizarCarrera(Carrera carrera, Participacion ganador) throws MalaPataException {
+        carrera.finalizar(ganador);
+        carrera.liquidar();
+        avisar(Eventos.CARRERA_ACTUALIZADA);
+    }
+
+    // APUESTAS
     public void registrarApuesta(Jugador jugador, Participacion participacion, Modalidad modalidad,
             double monto, String password) throws MalaPataException {
         sistemaApuestas.registrarApuesta(jugador, participacion, modalidad, monto, password);

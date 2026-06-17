@@ -20,7 +20,9 @@ public class ApuestaDTO {
 
     public ApuestaDTO(Apuesta apuesta) {
         Participacion p = apuesta.getParticipacion();
-        this.fecha = apuesta.getFecha().toString();
+        this.fecha = p.getCarrera().getJornada() != null
+                ? p.getCarrera().getJornada().getFecha().toString()
+                : "";
         this.nroCarrera = p.getCarrera().getNroCarrera();
         this.nombreCarrera = p.getCarrera().getNombre();
         this.nroCaballo = p.getNroParticipacion();

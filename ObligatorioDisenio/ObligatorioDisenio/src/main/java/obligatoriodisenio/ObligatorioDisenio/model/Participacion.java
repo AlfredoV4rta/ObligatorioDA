@@ -35,6 +35,10 @@ public class Participacion {
         this.apuestas.add(apuesta);
     }
 
+    public List<Apuesta> getApuestas() {
+        return apuestas;
+    }
+
     public double totalApostado() {
         double total = 0;
         for (Apuesta a : apuestas) {
@@ -45,6 +49,14 @@ public class Participacion {
 
     public int cantidadApuestas() {
         return apuestas.size();
+    }
+
+    public double totalPagado() {
+        double total = 0;
+        for (Apuesta a : apuestas) {
+            total += a.getMontoCobrado();
+        }
+        return total;
     }
 
     public double getDividendo() {

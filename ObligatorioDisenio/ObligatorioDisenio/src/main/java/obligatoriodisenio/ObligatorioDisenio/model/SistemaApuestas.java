@@ -40,7 +40,7 @@ public class SistemaApuestas {
     if (jugador.getSaldo() < costo)
         throw new MalaPataException("Saldo insuficiente");
 
-    Apuesta apuesta = new Apuesta(participacion, modalidad, monto);
+    Apuesta apuesta = new Apuesta(jugador, participacion, modalidad, monto);
     jugador.descontarSaldo(costo);
     jugador.agregarApuesta(apuesta);
     participacion.agregarApuesta(apuesta);

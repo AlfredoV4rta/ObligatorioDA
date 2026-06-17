@@ -42,5 +42,31 @@ public class Jornada {
             }
         }
         return carrerasDisponibles;
-    }                                                                                                       
+    }
+
+    public double totalApostado() {
+        double total = 0;
+        for (Carrera c : carreras) {
+            total += c.totalApostado();
+        }
+        return total;
+    }
+
+    public double totalPagado() {
+        double total = 0;
+        for (Carrera c : carreras) {
+            total += c.totalPagado();
+        }
+        return total;
+    }
+
+    public int cantidadFinalizadas() {
+        int cant = 0;
+        for (Carrera c : carreras) {
+            if (c.estaFinalizada()) {
+                cant++;
+            }
+        }
+        return cant;
+    }
 }

@@ -1,25 +1,27 @@
 package obligatoriodisenio.ObligatorioDisenio.model;
 
-import java.time.LocalDate;
-
 public class Apuesta {
+    private Jugador jugador;
     private Participacion participacion;
     private Modalidad modalidad;
     private double monto;
-    private LocalDate fecha;
     private double montoCobrado;
     private double dividendoFinal;
 
     public Apuesta() {
     }
 
-    public Apuesta(Participacion participacion, Modalidad modalidad, double monto) {
+    public Apuesta(Jugador jugador, Participacion participacion, Modalidad modalidad, double monto) {
+        this.jugador = jugador;
         this.participacion = participacion;
         this.modalidad = modalidad;
         this.monto = monto;
-        this.fecha = LocalDate.now();
         this.montoCobrado = 0;
         this.dividendoFinal = 0;
+    }
+
+    public Jugador getJugador() {
+        return jugador;
     }
 
     public Participacion getParticipacion() {
@@ -32,10 +34,6 @@ public class Apuesta {
 
     public double getMonto() {
         return monto;
-    }
-
-    public LocalDate getFecha() {
-        return fecha;
     }
 
     public double getMontoCobrado() {

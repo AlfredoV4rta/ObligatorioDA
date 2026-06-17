@@ -109,4 +109,36 @@ public class Carrera extends Observable {
             p.actualizarDividendo(montoARepartir);
         }
     }
+
+    public int cantidadApuestas() {
+        int total = 0;
+        for (Participacion p : participaciones) {
+            total += p.cantidadApuestas();
+        }
+        return total;
+    }
+
+    public double totalPagado() {
+        double total = 0;
+        for (Participacion p : participaciones) {
+            total += p.totalPagado();
+        }
+        return total;
+    }
+
+    public boolean estaFinalizada() {
+        return estado instanceof Finalizada;
+    }
+
+    public void liquidar() {
+        if (participacionGanadora == null) {
+            return;
+        }
+        double dividendo = participacionGanadora.getDividendo();
+        for (Apuesta a : participacionGanadora.getApuestas()) {
+            double pago = a.getModalidad().calcularPago(a.getMonto(), dividendo, participacionGanadora.totalApostado());
+            a.liquidar(pago, dividendo);
+            a.getJugador().acreditarSaldo(pago);
+        }
+    }
 }

@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MalaPATA — Panel de Administración</title>
+  <style>
+    * { box-sizing: border-box; }
+    body { font-family: 'Segoe UI', Tahoma, sans-serif; margin: 0; background: #0d1017; color: #e8eaed; }
+    .topbar { background: #12182a; padding: 14px 24px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #232c43; }
+    .brand { font-weight: 800; letter-spacing: 1px; color: #4d94ff; font-size: 18px; }
+    .topbar-right { display: flex; align-items: center; gap: 16px; }
+    button { border: none; border-radius: 6px; padding: 8px 14px; cursor: pointer; font-weight: 600; }
+    .btn-logout { background: #c0392b; color: #fff; }
+    .btn-azul { background: #4d94ff; color: #fff; }
+    .btn-amarillo { background: #f1c40f; color: #12182a; }
+    .btn-gris { background: #232c43; color: #e8eaed; }
+    main { padding: 24px; max-width: 1100px; margin: 0 auto; display: grid; gap: 22px; }
+    .jornada-bar { display: flex; align-items: center; justify-content: center; gap: 18px; background: #12182a; border-radius: 10px; padding: 12px; }
+    .jornada-bar .fecha { font-weight: 700; font-size: 16px; }
+    .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 14px; }
+    .stat { background: #12182a; border-radius: 10px; padding: 14px 16px; }
+    .stat .label { font-size: 11px; color: #8aa0bd; text-transform: uppercase; letter-spacing: .5px; }
+    .stat .valor { font-size: 20px; font-weight: 700; margin-top: 4px; }
+    .seccion-titulo { font-size: 14px; color: #9fb3c8; text-transform: uppercase; letter-spacing: .5px; margin: 0 0 12px; }
+    table { width: 100%; border-collapse: collapse; }
+    th, td { padding: 7px 10px; text-align: left; border-bottom: 1px solid #232c43; font-size: 14px; }
+    th { color: #8aa0bd; font-weight: 600; }
+    .sin-datos { color: #7a8699; font-style: italic; }
+    .modal-bg { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.65); justify-content: center; align-items: center; z-index: 1000; }
+    .modal { background: #12182a; border: 1px solid #232c43; border-radius: 12px; padding: 24px; width: 94%; max-width: 640px; }
+    .modal h3 { margin: 0 0 6px; }
+    .modal .sub { color: #8aa0bd; font-size: 14px; margin-bottom: 14px; }
+    .modal label { display: block; font-size: 12px; color: #8aa0bd; margin: 14px 0 4px; }
+    .modal select { width: 100%; padding: 8px; background: #0d1017; color: #e8eaed; border: 1px solid #232c43; border-radius: 6px; }
+    .modal .acciones { display: flex; gap: 10px; margin-top: 18px; flex-wrap: wrap; }
+  </style>
+</head>
+<body>
+  <script src="/utilesVista.js"></script>
+
+  <div class="topbar">
+    <div class="brand">🏇 Panel de Administración</div>
+    <div class="topbar-right">
+      <strong id="nombreAdmin">—</strong>
+      <button class="btn-logout" id="btnLogout">Cerrar sesión</button>
+    </div>
+  </div>
+
+  <main>
+    <div class="jornada-bar">
+      <button class="btn-gris" id="btnAnterior" title="Jornada anterior">◀</button>
+      <span class="fecha" id="jornadaActual">—</span>
+      <button class="btn-gris" id="btnSiguiente" title="Jornada siguiente">▶</button>
+    </div>
+
+    <section class="stats">
+      <div class="stat"><div class="label">Total apostado</div><div class="valor" id="stApostado">—</div></div>
+      <div class="stat"><div class="label">Total pagado</div><div class="valor" id="stPagado">—</div></div>
+      <div class="stat"><div class="label">Comisiones</div><div class="valor" id="stComisiones">—</div></div>
+      <div class="stat"><div class="label">Balance general</div><div class="valor" id="stBalance">—</div></div>
+      <div class="stat"><div class="label">Carreras totales</div><div class="valor" id="stCarreras">—</div></div>
+      <div class="stat"><div class="label">Finalizadas</div><div class="valor" id="stFinalizadas">—</div></div>
+      <div class="stat"><div class="label">Faltan correr</div><div class="valor" id="stFaltan">—</div></div>
+    </section>
+
+    <section>
+      <h2 class="seccion-titulo">Carreras de la jornada</h2>
+      <div id="carreras"><p class="sin-datos">Cargando…</p></div>
+    </section>
+  </main>
+
+  <div class="modal-bg" id="modalGestion">
+    <div class="modal">
+      <h3 id="gTitulo">Gestionar carrera</h3>
+      <div class="sub" id="gSub">—</div>
+      <div id="gCaballos"></div>
+      <label for="gGanador">Caballo ganador (para finalizar)</label>
+      <select id="gGanador"></select>
+      <div class="acciones">
+        <button class="btn-azul" id="btnAbrir">Abrir carrera</button>
+        <button class="btn-azul" id="btnCerrar">Cerrar carrera</button>
+        <button class="btn-amarillo" id="btnFinalizar">Finalizar y pagar</button>
+        <button class="btn-gris" id="btnCerrarModal">Cerrar</button>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    import dispatcher from '/CommandDispatcher.js';
+    import SSECommandDispatcher from '/SSECommandDispatcher.js';
+
+    let carreras = [];
+    let carreraActual = -1;
+
+    const view = dispatcher.registerView('tableroAdmin', {
+      urlInicio: '/tableroAdmin/inicio',
+      urlCierre: '/tableroAdmin/fin',
+      onException: (msg) => mostrarMensaje(msg)
+    });
+
+    view.handler('infoAdmin', (nombre) => {
+      document.getElementById('nombreAdmin').textContent = nombre;
+    });
+
+    view.handler('tablero', (t) => {
+      document.getElementById('jornadaActual').textContent = t.fecha || 'No hay jornadas definidas en el sistema';
+      document.getElementById('stApostado').textContent = `$${t.totalApostado}`;
+      document.getElementById('stPagado').textContent = `$${t.totalPagado}`;
+      document.getElementById('stComisiones').textContent = `$${t.comisiones}`;
+      document.getElementById('stBalance').textContent = `$${t.balance}`;
+      document.getElementById('stCarreras').textContent = t.cantidadCarreras;
+      document.getElementById('stFinalizadas').textContent = t.finalizadas;
+      document.getElementById('stFaltan').textContent = t.faltanCorrer;
+    });
+
+    view.handler('carreras', (data) => {
+      carreras = data || [];
+      const cont = document.getElementById('carreras');
+      if (!carreras.length) { cont.innerHTML = '<p class="sin-datos">No hay carreras en esta jornada</p>'; return; }
+      let html = '<table><thead><tr><th>N°</th><th>Carrera</th><th>Estado</th><th>Caballos</th><th>Total apostado</th><th>Apuestas</th><th></th></tr></thead><tbody>';
+      carreras.forEach((c, i) => {
+        html += `<tr>
+          <td>${c.numero}</td><td>${c.nombre}</td><td>${c.estado}</td>
+          <td>${c.cantidadCaballos}</td><td>$${c.totalApostado}</td><td>${c.cantidadApuestas}</td>
+          <td><button class="btn-azul" data-carrera="${i}">Gestionar</button></td></tr>`;
+      });
+      cont.innerHTML = html + '</tbody></table>';
+      cont.querySelectorAll('button[data-carrera]').forEach(btn =>
+        btn.addEventListener('click', () => abrirGestion(parseInt(btn.dataset.carrera))));
+    });
+
+    view.handler('accionRealizada', () => cerrarModal());
+    view.handler('sesionFinalizada', () => { window.location.href = '/login.html'; });
+
+    dispatcher.startView(view);
+
+    const sse = new SSECommandDispatcher('/tableroAdmin/registrarSSE', dispatcher,
+      () => console.warn('SSE cerrado por el servidor'));
+
+    document.getElementById('btnAnterior').addEventListener('click', () => dispatcher.submit('/tableroAdmin/retroceder'));
+    document.getElementById('btnSiguiente').addEventListener('click', () => dispatcher.submit('/tableroAdmin/avanzar'));
+
+    function abrirGestion(posCarrera) {
+      carreraActual = posCarrera;
+      const c = carreras[posCarrera];
+      document.getElementById('gTitulo').textContent = `Gestionar carrera #${c.numero} — ${c.nombre}`;
+      document.getElementById('gSub').textContent = `Estado: ${c.estado} · Total apostado: $${c.totalApostado}`;
+      let html = '<table><thead><tr><th>N°</th><th>Caballo</th><th>Dividendo</th><th>Total apostado</th><th>Apuestas</th></tr></thead><tbody>';
+      for (const cab of c.caballos) {
+        html += `<tr><td>${cab.numero}</td><td>${cab.nombreCaballo}</td><td>${cab.dividendo}</td><td>$${cab.totalApostado}</td><td>${cab.cantidadApuestas}</td></tr>`;
+      }
+      document.getElementById('gCaballos').innerHTML = html + '</tbody></table>';
+      document.getElementById('gGanador').innerHTML =
+        '<option value="-1">— Elegí el caballo ganador —</option>' +
+        c.caballos.map((cab, i) => `<option value="${i}">${cab.numero} - ${cab.nombreCaballo}</option>`).join('');
+      document.getElementById('modalGestion').style.display = 'flex';
+    }
+
+    function cerrarModal() { document.getElementById('modalGestion').style.display = 'none'; }
+    document.getElementById('btnCerrarModal').addEventListener('click', cerrarModal);
+
+    document.getElementById('btnAbrir').addEventListener('click', () =>
+      dispatcher.submit('/tableroAdmin/abrir', { posCarrera: carreraActual }));
+    document.getElementById('btnCerrar').addEventListener('click', () =>
+      dispatcher.submit('/tableroAdmin/cerrar', { posCarrera: carreraActual }));
+    document.getElementById('btnFinalizar').addEventListener('click', () =>
+      dispatcher.submit('/tableroAdmin/finalizar', {
+        posCarrera: carreraActual,
+        posGanador: parseInt(document.getElementById('gGanador').value)
+      }));
+
+    document.getElementById('btnLogout').addEventListener('click', () => dispatcher.submit('/logout'));
+  </script>
+</body>
+</html>
